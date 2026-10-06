@@ -67,7 +67,6 @@ Chaque libellé marqué d'un **ⓘ** affiche une explication au survol de la sou
 | Copier les résultats | Copie un rapport texte complet (entrées, tableau des critères, résultat, synthèse, avertissements, version des données). |
 | Réinitialiser | Rétablit les paramètres par défaut. Les tables de courant admissible personnalisées sont conservées. |
 | Panneau des résultats | Section recommandée, tableau des critères, synthèse de la section retenue, avertissements. Sur téléphone, une barre en bas d'écran affiche la section et mène aux résultats. |
-| `?test` dans l'adresse | Lance les auto-tests (bandeau + console du navigateur). |
 
 **Saisie des nombres** : le point et la virgule sont acceptés comme séparateur décimal, quelle que soit la langue
 (`6.25` = `6,25`). Il n'y a pas de séparateur de milliers : `1,500` est lu 1,5. La notation scientifique est acceptée

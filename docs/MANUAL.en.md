@@ -66,7 +66,6 @@ Every label marked with **ⓘ** shows an explanation when hovered (or tapped on 
 | Copy results | Copies a complete text report (inputs, criteria table, result, summary, warnings, data version). |
 | Reset | Restores the default parameters. Custom ampacity tables are kept. |
 | Results panel | Recommended section, criteria table, summary of the selected section, warnings. On a phone, a bar at the bottom shows the section and scrolls to the results. |
-| `?test` in the URL | Runs the self-tests (banner + browser console). |
 
 **Number input**: decimal point or comma are both accepted, whatever the language (`6.25` = `6,25`). There is no
 thousands separator: `1,500` is read as 1.5. Scientific notation is accepted (`1e-3`). An invalid value is outlined in

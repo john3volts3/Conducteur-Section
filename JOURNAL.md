@@ -36,6 +36,7 @@
 | 2026-10-06 | `LICENSE` | Création : licence MIT. |
 | 2026-10-06 | `index.html`, `i18n.js` | Bouton « Manual / Manuel » (barre du haut) et lien en pied de page vers le manuel GitHub de la langue courante ; +1 auto-test (46). |
 | 2026-10-06 | `README.md`, `README.fr.md`, `FSD.md` | Section Licence (MIT, valeurs IEC reproduites à titre de référence), dépôt désormais public. |
+| 2026-10-06 | `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Retrait de la mention de l'option `?test` (tableau « Interface »). |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).
