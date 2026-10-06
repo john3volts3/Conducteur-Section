@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cable Sizer</title>
+<meta name="description" content="" data-i18n-attr="content:page.description">
+<style>
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --text: #1b1f24;
+  --muted: #5b6470;
+  --border: #d5dae1;
+  --accent: #1f6feb;
+  --accent-soft: #e7f0ff;
+  --ok: #1a7f37;
+  --warn: #9a6700;
+  --err: #cf222e;
+  --gov-bg: #fff4d6;
+  --radius: 0.6rem;
+  --gap: 1rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1216;
+    --surface: #181c22;
+    --surface-2: #20252d;
+    --text: #e6e9ee;
+    --muted: #9aa4b1;
+    --border: #2f3640;
+    --accent: #58a6ff;
+    --accent-soft: #16243a;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --err: #f85149;
+    --gov-bg: #3a2f0b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1216;
+  --surface: #181c22;
+  --surface-2: #20252d;
+  --text: #e6e9ee;
+  --muted: #9aa4b1;
+  --border: #2f3640;
+  --accent: #58a6ff;
+  --accent-soft: #16243a;
+  --ok: #3fb950;
+  --warn: #d29922;
+  --err: #f85149;
+  --gov-bg: #3a2f0b;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+h1, h2, h3 { margin: 0; line-height: 1.2; }
+h2 { font-size: 1rem; margin-bottom: 0.75rem; }
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+.brand svg { flex: none; color: var(--accent); }
+.brand h1 { font-size: 1.25rem; }
+.brand .tag { color: var(--muted); font-size: 0.85rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+.btn {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-small { font-size: 0.8rem; padding: 0.3rem 0.6rem; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--gap);
+  padding: 1rem;
+  max-width: 82rem;
+  margin: 0 auto;
+}
+@media (min-width: 960px) {
+  .layout { grid-template-columns: minmax(0, 1fr) minmax(0, 28rem); align-items: start; }
+  .results { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+}
+.inputs-col, .results { display: grid; gap: var(--gap); min-width: 0; }
+form { display: grid; gap: var(--gap); margin: 0; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  min-width: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+}
+.field { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.field label, .field legend { font-size: 0.85rem; color: var(--muted); }
+fieldset.field { border: 0; margin: 0; padding: 0; }
+input[type="number"], input[type="text"], select {
+  width: 100%;
+  font: inherit;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  background: var(--surface-2);
+  color: var(--text);
+  min-width: 0;
+}
+input[readonly] { opacity: 0.75; }
+input[aria-invalid="true"] { border-color: var(--err); }
+.field-error { color: var(--err); font-size: 0.78rem; min-height: 0; }
+.field-error:empty { display: none; }
+.input-unit { display: flex; gap: 0.35rem; }
+.input-unit select { width: auto; flex: none; }
+.radio-row { display: flex; flex-wrap: wrap; gap: 0.9rem; padding-top: 0.35rem; }
+.radio-row label { color: var(--text); font-size: 0.9rem; display: inline-flex; gap: 0.3rem; align-items: center; }
+.info { font-size: 0.82rem; color: var(--muted); margin: 0.6rem 0 0; }
+.info output { color: var(--text); font-variant-numeric: tabular-nums; }
+
+.crit { border-top: 1px solid var(--border); padding: 0.8rem 0; }
+.crit:first-of-type { border-top: 0; padding-top: 0; }
+.crit:last-of-type { padding-bottom: 0; }
+.crit-head { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; margin-bottom: 0.5rem; }
+.crit-head input { width: 1.05rem; height: 1.05rem; }
+.crit.off .crit-body { opacity: 0.5; }
+.hint { font-size: 0.8rem; color: var(--muted); margin: 0.45rem 0 0; }
+.formula { font-family: ui-monospace, Consolas, monospace; font-size: 0.8rem; }
+
+details.card > summary { cursor: pointer; font-weight: 600; }
+details.card[open] > summary { margin-bottom: 0.75rem; }
+.iz-tools { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.5rem 0 0.75rem; }
+.iz-status { font-size: 0.8rem; color: var(--muted); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 0.4rem 0.45rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+tr.governing td { background: var(--gov-bg); font-weight: 600; }
+.iz-table input { max-width: 7rem; }
+.iz-table td, .iz-table th { padding: 0.25rem 0.45rem; }
+
+.badge { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 0.05rem 0.4rem; border-radius: 1rem; border: 1px solid currentColor; white-space: nowrap; }
+.s-ok { color: var(--ok); }
+.s-governing { color: var(--warn); }
+.s-error, .s-fail { color: var(--err); }
+.s-nodata { color: var(--muted); }
+.row-note { display: block; font-size: 0.76rem; color: var(--muted); font-weight: 400; }
+
+.hero { text-align: center; background: var(--accent-soft); border-color: var(--accent); }
+.hero .label { font-size: 0.85rem; color: var(--muted); }
+.hero .value { font-size: 2.6rem; font-weight: 700; line-height: 1.1; margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
+.hero .sub { font-size: 0.9rem; }
+
+dl.summary { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 0.9rem; margin: 0; font-size: 0.88rem; }
+dl.summary dt { color: var(--muted); }
+dl.summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.warnings { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.4rem; font-size: 0.84rem; }
+.warnings li { padding: 0.45rem 0.6rem; border-radius: 0.4rem; border-left: 3px solid var(--warn); background: var(--surface-2); }
+.warnings li.err { border-left-color: var(--err); }
+.warnings li.note { border-left-color: var(--muted); }
+
+.test-banner { margin: 0 1rem; padding: 0.5rem 0.75rem; border-radius: 0.4rem; font-size: 0.85rem; background: var(--surface-2); border: 1px solid var(--border); }
+.toast {
+  position: fixed; left: 50%; bottom: 4.5rem; transform: translateX(-50%);
+  background: var(--text); color: var(--bg); padding: 0.5rem 0.9rem; border-radius: 0.4rem;
+  font-size: 0.88rem; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.toast.show { opacity: 1; }
+
+.mobile-pill {
+  position: fixed; left: 1rem; right: 1rem; bottom: 1rem;
+  display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 0.9rem; border-radius: 2rem;
+  background: var(--accent); color: #fff; border: 0; font: inherit; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25); cursor: pointer;
+}
+@media (min-width: 960px) { .mobile-pill { display: none; } }
+@media (max-width: 959px) { body { padding-bottom: 4.5rem; } }
+
+footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-width: 82rem; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>
+    </svg>
+    <div>
+      <h1 data-i18n="page.title"></h1>
+      <span class="tag" data-i18n="header.tagline"></span>
+    </div>
+  </div>
+  <div class="actions">
+    <button type="button" id="btnLang" class="btn" data-i18n-attr="title:lang.switchTitle;aria-label:lang.switchTitle"></button>
+    <button type="button" id="btnTheme" class="btn"></button>
+    <button type="button" id="btnCopy" class="btn btn-primary" data-i18n="btn.copy"></button>
+    <button type="button" id="btnReset" class="btn" data-i18n="btn.reset"></button>
+  </div>
+</header>
+
+<p id="testBanner" class="test-banner" hidden></p>
+
+<main class="layout">
+  <div class="inputs-col">
+    <form id="form" novalidate autocomplete="off">
+      <section class="card" aria-labelledby="h-system">
+        <h2 id="h-system" data-i18n="sec.system"></h2>
+        <div class="grid">
+          <div class="field">
+            <label for="system" data-i18n="lbl.system"></label>
+            <select id="system" data-key="system">
+              <option value="dc" data-i18n="opt.system.dc"></option>
+              <option value="ac1" data-i18n="opt.system.ac1"></option>
+              <option value="ac3" data-i18n="opt.system.ac3"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="voltage" data-i18n="lbl.voltage"></label>
+            <input id="voltage" data-key="voltage" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <fieldset class="field">
+            <legend data-i18n="lbl.loadMode"></legend>
+            <div class="radio-row">
+              <label><input type="radio" name="loadMode" value="current" data-key="loadMode"> <span data-i18n="opt.load.current"></span></label>
+              <label><input type="radio" name="loadMode" value="power" data-key="loadMode"> <span data-i18n="opt.load.power"></span></label>
+            </div>
+          </fieldset>
+          <div class="field load-current">
+            <label for="current" data-i18n="lbl.current"></label>
+            <input id="current" data-key="current" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field load-power">
+            <label for="power" data-i18n="lbl.power"></label>
+            <input id="power" data-key="power" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field ac-only">
+            <label for="cosphi" data-i18n="lbl.cosphi"></label>
+            <input id="cosphi" data-key="cosphi" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <p class="info"><span data-i18n="info.designCurrent"></span> <output id="currentInfo">—</output></p>
+      </section>
+
+      <section class="card" aria-labelledby="h-line">
+        <h2 id="h-line" data-i18n="sec.line"></h2>
+        <div class="grid">
+          <div class="field">
+            <label for="length" data-i18n="lbl.length"></label>
+            <input id="length" data-key="length" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+            <small class="hint" data-i18n="hint.length"></small>
+          </div>
+          <div class="field ac-only">
+            <label for="reactance" data-i18n="lbl.reactance"></label>
+            <input id="reactance" data-key="reactance" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field ac-only">
+            <label for="frequency" data-i18n="lbl.frequency"></label>
+            <input id="frequency" data-key="frequency" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-conductor">
+        <h2 id="h-conductor" data-i18n="sec.conductor"></h2>
+        <div class="grid">
+          <div class="field">
+            <label for="material" data-i18n="lbl.material"></label>
+            <select id="material" data-key="material">
+              <option value="cu" data-i18n="opt.material.cu"></option>
+              <option value="al" data-i18n="opt.material.al"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="insulation" data-i18n="lbl.insulation"></label>
+            <select id="insulation" data-key="insulation">
+              <option value="pvc" data-i18n="opt.insulation.pvc"></option>
+              <option value="xlpe" data-i18n="opt.insulation.xlpe"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="thetaMax" data-i18n="lbl.thetaMax"></label>
+            <input id="thetaMax" data-key="thetaMax" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="rhoMode" data-i18n="lbl.rhoMode"></label>
+            <select id="rhoMode" data-key="rhoMode">
+              <option value="temp" data-i18n="opt.rhoMode.temp"></option>
+              <option value="iec" data-i18n="opt.rhoMode.iec"></option>
+            </select>
+          </div>
+          <div class="field rho-temp">
+            <label for="condTemp" data-i18n="lbl.condTemp"></label>
+            <!-- Default keyboard: the iOS decimal pad has no minus sign -->
+            <input id="condTemp" data-key="condTemp" type="text">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="rho20" data-i18n="lbl.rho20"></label>
+            <input id="rho20" data-key="rho20" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="alpha" data-i18n="lbl.alpha"></label>
+            <input id="alpha" data-key="alpha" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <p class="info"><span data-i18n="info.rhoUsed"></span> <output id="rhoInfo">—</output> <span class="formula">ρ(T) = ρ20·(1 + α·(T − 20))</span></p>
+      </section>
+
+      <section class="card" aria-labelledby="h-install">
+        <h2 id="h-install" data-i18n="sec.install"></h2>
+        <div class="grid">
+          <div class="field">
+            <label for="ambient" data-i18n="lbl.ambient"></label>
+            <!-- Default keyboard: the iOS decimal pad has no minus sign -->
+            <input id="ambient" data-key="ambient" type="text">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="grouping" data-i18n="lbl.grouping"></label>
+            <input id="grouping" data-key="grouping" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="kThetaOverride" data-i18n="lbl.kThetaOverride"></label>
+            <input id="kThetaOverride" data-key="kThetaOverride" type="text" inputmode="decimal" data-i18n-attr="placeholder:ph.auto">
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <p class="info"><span data-i18n="info.kThetaAuto"></span> <output id="kThetaInfo">—</output> <span class="formula">kθ = √((θmax − θamb) / (θmax − 30))</span> · <span data-i18n="info.totalFactor"></span> <output id="factorInfo">—</output></p>
+      </section>
+
+      <section class="card" aria-labelledby="h-criteria">
+        <h2 id="h-criteria" data-i18n="sec.criteria"></h2>
+
+        <div class="crit" data-crit="vdOn">
+          <label class="crit-head"><input type="checkbox" data-key="vdOn"> <span data-i18n="crit.vd.title"></span></label>
+          <div class="crit-body grid">
+            <div class="field">
+              <label for="vdValue" data-i18n="lbl.limit"></label>
+              <div class="input-unit">
+                <input id="vdValue" data-key="vdValue" type="text" inputmode="decimal">
+                <select id="vdUnit" data-key="vdUnit" data-i18n-attr="aria-label:aria.vdUnit"><option value="%">%</option><option value="V">V</option></select>
+              </div>
+              <small class="field-error"></small>
+            </div>
+          </div>
+          <p class="hint formula">S = b·ρ·L·I·cos φ / (ΔUmax − b·L·I·x·sin φ) — b = 2 (DC, 1~), √3 (3~)</p>
+        </div>
+
+        <div class="crit" data-crit="lossOn">
+          <label class="crit-head"><input type="checkbox" data-key="lossOn"> <span data-i18n="crit.loss.title"></span></label>
+          <div class="crit-body grid">
+            <div class="field">
+              <label for="lossValue" data-i18n="lbl.limit"></label>
+              <div class="input-unit">
+                <input id="lossValue" data-key="lossValue" type="text" inputmode="decimal">
+                <select id="lossUnit" data-key="lossUnit" data-i18n-attr="aria-label:aria.lossUnit"><option value="%">%</option><option value="W">W</option></select>
+              </div>
+              <small class="field-error"></small>
+            </div>
+          </div>
+          <p class="hint formula">S = n·ρ·L·I² / Pmax — n = 2 (DC, 1~), 3 (3~)</p>
+        </div>
+
+        <div class="crit" data-crit="heatOn">
+          <label class="crit-head"><input type="checkbox" data-key="heatOn"> <span data-i18n="crit.heat.title"></span></label>
+          <div class="crit-body grid">
+            <div class="field">
+              <label for="heatH" data-i18n="lbl.heatH"></label>
+              <input id="heatH" data-key="heatH" type="text" inputmode="decimal">
+              <small class="field-error"></small>
+            </div>
+          </div>
+          <p class="hint"><span class="formula">S = (I²·ρ(θmax) / (2·√π·h·ΔT·10⁻³))^(2/3), ΔT = θmax − θamb.</span>
+            <span data-i18n="crit.heat.hint"></span></p>
+        </div>
+
+        <div class="crit" data-crit="izOn">
+          <label class="crit-head"><input type="checkbox" data-key="izOn"> <span data-i18n="crit.iz.title"></span></label>
+          <p class="hint" data-i18n="crit.iz.hint"></p>
+        </div>
+
+        <div class="crit" data-crit="scOn">
+          <label class="crit-head"><input type="checkbox" data-key="scOn"> <span data-i18n="crit.sc.title"></span></label>
+          <div class="crit-body grid">
+            <div class="field">
+              <label for="isc" data-i18n="lbl.isc"></label>
+              <input id="isc" data-key="isc" type="text" inputmode="decimal">
+              <small class="field-error"></small>
+            </div>
+            <div class="field">
+              <label for="scTime" data-i18n="lbl.scTime"></label>
+              <input id="scTime" data-key="scTime" type="text" inputmode="decimal">
+              <small class="field-error"></small>
+            </div>
+            <div class="field">
+              <label for="k" data-i18n="lbl.k"></label>
+              <input id="k" data-key="k" type="text" inputmode="decimal">
+              <small class="field-error"></small>
+            </div>
+            <div class="field">
+              <span aria-hidden="true">&nbsp;</span>
+              <label class="radio-row" style="padding-top:0.5rem"><input type="checkbox" data-key="kAuto" id="kAuto"> <span data-i18n="lbl.kAuto"></span></label>
+            </div>
+          </div>
+          <p class="hint"><span class="formula">S = Isc·√t / k</span> — <output id="kInfo">—</output></p>
+        </div>
+
+        <div class="crit" data-crit="protOn">
+          <label class="crit-head"><input type="checkbox" data-key="protOn"> <span data-i18n="crit.prot.title"></span></label>
+          <div class="crit-body grid">
+            <div class="field">
+              <label for="inRating" data-i18n="lbl.inRating"></label>
+              <input id="inRating" data-key="inRating" type="text" inputmode="decimal">
+              <small class="field-error"></small>
+            </div>
+          </div>
+          <p class="hint" data-i18n="crit.prot.hint"></p>
+        </div>
+      </section>
+    </form>
+
+    <details class="card" id="izEditor">
+      <summary><span data-i18n="iz.summary"></span> <span id="izCombo"></span></summary>
+      <p class="hint" data-i18n="iz.hint"></p>
+      <div class="iz-tools">
+        <button type="button" class="btn btn-small" id="izExport" data-i18n="iz.export"></button>
+        <button type="button" class="btn btn-small" id="izImportBtn" data-i18n="iz.import"></button>
+        <input type="file" id="izImport" accept="application/json,.json" hidden>
+        <button type="button" class="btn btn-small" id="izClear" data-i18n="iz.clear"></button>
+        <span class="iz-status" id="izStatus" role="status"></span>
+      </div>
+      <div class="table-wrap">
+        <table class="iz-table">
+          <thead><tr>
+            <th scope="col" data-i18n="iz.colSection"></th>
+            <th scope="col" data-i18n="iz.colIz"></th>
+            <th scope="col" class="num" data-i18n="iz.colCorrected"></th>
+          </tr></thead>
+          <tbody id="izBody"></tbody>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <aside class="results" id="results" aria-live="polite">
+    <section class="card hero" id="hero">
+      <div class="label" data-i18n="res.hero"></div>
+      <div class="value" id="heroValue">—</div>
+      <div class="sub" id="heroSub"></div>
+    </section>
+    <section class="card" aria-labelledby="h-crit-res">
+      <h2 id="h-crit-res" data-i18n="res.criteria"></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th scope="col" data-i18n="res.colCriterion"></th>
+            <th scope="col" class="num" data-i18n="res.colRequired"></th>
+            <th scope="col" class="num" data-i18n="res.colStandard"></th>
+            <th scope="col" data-i18n="res.colStatus"></th>
+          </tr></thead>
+          <tbody id="critBody"></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card" aria-labelledby="h-sel">
+      <h2 id="h-sel" data-i18n="res.selected"></h2>
+      <dl class="summary" id="summary"></dl>
+      <ul class="warnings" id="warnings"></ul>
+    </section>
+  </aside>
+</main>
+
+<button type="button" class="mobile-pill" id="mobilePill"><span data-i18n="res.pill"></span><span id="pillValue">—</span></button>
+<div class="toast" id="toast" role="status"></div>
+
+<footer>
+  <span data-i18n="footer.disclaimer"></span>
+  <span data-i18n="footer.testsBefore"></span> <code>?test</code> <span data-i18n="footer.testsAfter"></span>
+</footer>
+
+<script src="i18n.js"></script>
+<script>
+'use strict';
+
+/* ===================== Constants ===================== */
+
+const MATERIALS = {
+  cu: { rho20: 0.017241, alpha: 0.00393, K: 226, beta: 234.5 },
+  al: { rho20: 0.028264, alpha: 0.00403, K: 148, beta: 228 }
+};
+// thetaF / thetaFLarge: final short-circuit temperature (<= 300 mm² / > 300 mm²)
+const INSULATIONS = {
+  pvc: { thetaMax: 70, thetaF: 160, thetaFLarge: 140 },
+  xlpe: { thetaMax: 90, thetaF: 250, thetaFLarge: 250 }
+};
+const K_TABLE = { 'cu-pvc': 115, 'cu-xlpe': 143, 'al-pvc': 76, 'al-xlpe': 94 };
+const K_TABLE_LARGE = { 'cu-pvc': 103, 'cu-xlpe': 143, 'al-pvc': 68, 'al-xlpe': 94 };
+const STD_SECTIONS = [0.5, 0.75, 1, 1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300, 400, 500, 630];
+const MU0 = 4e-7 * Math.PI;
+const THETA_REF = 30;
+
+const STORAGE_SETTINGS = 'cableSizer.settings.v1';
+const STORAGE_IZ = 'cableSizer.izTables.v1';
+const STORAGE_THEME = 'cableSizer.theme';
+const STORAGE_LANG = 'cableSizer.lang';
+
+const DEFAULTS = {
+  system: 'ac1', voltage: '230', loadMode: 'current', current: '16', power: '3000', cosphi: '0.9',
+  length: '20', reactance: '0.08', frequency: '50',
+  material: 'cu', insulation: 'pvc', thetaMax: '70', rhoMode: 'temp', condTemp: '70',
+  rho20: '0.017241', alpha: '0.00393',
+  ambient: '30', grouping: '1', kThetaOverride: '',
+  vdOn: true, vdValue: '3', vdUnit: '%',
+  lossOn: true, lossValue: '2', lossUnit: '%',
+  heatOn: true, heatH: '10',
+  izOn: false,
+  scOn: false, isc: '3000', scTime: '0.1', k: '115', kAuto: true,
+  protOn: false, inRating: '16'
+};
+
+/* ===================== Localisation ===================== */
+
+// Falls back to an empty English dictionary if i18n.js is missing: keys are then displayed.
+const DICTIONARIES = typeof I18N !== 'undefined' ? I18N : { en: {} };
+const LANGUAGES = Object.keys(DICTIONARIES);
+const LOCALES = { en: 'en-US', fr: 'fr-FR' };
+const DEFAULT_LANG = 'en';
+let currentLang = DEFAULT_LANG;
+
+function t(key, params) {
+  const dict = DICTIONARIES[currentLang] || {};
+  let text = key in dict ? dict[key] : (DICTIONARIES.en && key in DICTIONARIES.en ? DICTIONARIES.en[key] : key);
+  if (params) text = text.replace(/\{(\w+)\}/g, (m, p) => (p in params ? params[p] : m));
+  return text;
+}
+
+function applyTranslations() {
+  document.documentElement.lang = currentLang;
+  document.title = t('page.title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+    el.dataset.i18nAttr.split(';').forEach(pair => {
+      const [attr, key] = pair.split(':');
+      el.setAttribute(attr.trim(), t(key.trim()));
+    });
+  });
+  const next = LANGUAGES[(LANGUAGES.indexOf(currentLang) + 1) % LANGUAGES.length];
+  $('btnLang').textContent = (DICTIONARIES[next] && DICTIONARIES[next]['lang.name']) || next;
+  $('btnLang').hidden = LANGUAGES.length < 2;
+}
+
+function setLanguage(lang) {
+  currentLang = LANGUAGES.includes(lang) ? lang : DEFAULT_LANG;
+  applyTranslations();
+  applyTheme(currentTheme);
+  renderIzEditor();
+  updateKField();
+  compute();
+}
+
+function cycleLanguage() {
+  const next = LANGUAGES[(LANGUAGES.indexOf(currentLang) + 1) % LANGUAGES.length];
+  store.set(STORAGE_LANG, next);
+  setLanguage(next);
+}
+
+/* ===================== Pure calculation functions ===================== */
+// Units: section mm², length m, current A, voltage V, resistivity Ω·mm²/m, reactance Ω/m.
+
+// Accepts "." or "," as decimal separator, no thousands separator ("1,500" = 1.5).
+const NUMBER_PATTERN = /^[+-]?(\d+([.,]\d*)?|[.,]\d+)([eE][+-]?\d+)?$/;
+function parseNumber(raw) {
+  const text = String(raw).trim();
+  if (!NUMBER_PATTERN.test(text)) return NaN;
+  return Number(text.replace(',', '.'));
+}
+
+function rhoAtTemperature(rho20, alpha, temperature) {
+  return rho20 * (1 + alpha * (temperature - 20));
+}
+
+function rhoIecConvention(rho20) {
+  return 1.25 * rho20;
+}
+
+// b: voltage drop factor, n: number of loaded conductors (losses), m: power factor of the system
+function systemFactors(system) {
+  if (system === 'ac3') return { b: Math.sqrt(3), n: 3, m: Math.sqrt(3) };
+  return { b: 2, n: 2, m: 1 };
+}
+
+function currentFromPower(power, voltage, cosphi, system) {
+  const pf = system === 'dc' ? 1 : cosphi;
+  return power / (systemFactors(system).m * voltage * pf);
+}
+
+function activePower(voltage, current, cosphi, system) {
+  const pf = system === 'dc' ? 1 : cosphi;
+  return systemFactors(system).m * voltage * current * pf;
+}
+
+function phaseTerms(system, cosphi, x) {
+  if (system === 'dc') return { pf: 1, sin: 0, x: 0 };
+  return { pf: cosphi, sin: Math.sqrt(Math.max(0, 1 - cosphi * cosphi)), x: x };
+}
+
+function sectionForVoltageDrop({ system, rho, length, current, dUmax, cosphi = 1, x = 0 }) {
+  const { b } = systemFactors(system);
+  const t = phaseTerms(system, cosphi, x);
+  const denominator = dUmax - b * length * current * t.x * t.sin;
+  if (denominator <= 0) {
+    return { section: NaN, denominator, error: 'negativeDenominator' };
+  }
+  return { section: b * rho * length * current * t.pf / denominator, denominator };
+}
+
+function sectionForPowerLoss({ system, rho, length, current, pMax }) {
+  return systemFactors(system).n * rho * length * current * current / pMax;
+}
+
+function sectionForShortCircuit({ isc, time, k }) {
+  return isc * Math.sqrt(time) / k;
+}
+
+// IEC 60949 adiabatic factor k = K·√ln((β + θf) / (β + θi))
+function adiabaticK(material, thetaI, thetaF) {
+  const m = MATERIALS[material];
+  return m.K * Math.sqrt(Math.log((m.beta + thetaF) / (m.beta + thetaI)));
+}
+
+// Heat balance, bare conductor in free air: I²ρ/S = h·π·D·ΔT, D = 2√(S/π) mm
+function sectionForHeating({ current, rho, h, deltaT }) {
+  return Math.pow(current * current * rho / (0.002 * Math.sqrt(Math.PI) * h * deltaT), 2 / 3);
+}
+
+function temperatureCorrectionFactor(thetaMax, thetaAmb, thetaRef = THETA_REF) {
+  return Math.sqrt((thetaMax - thetaAmb) / (thetaMax - thetaRef));
+}
+
+function sectionForAmpacity(izTable, current, factor) {
+  for (const s of STD_SECTIONS) {
+    const iz = izTable[s];
+    if (iz > 0 && iz * factor >= current) return s;
+  }
+  return null;
+}
+
+function voltageDrop({ system, rho, length, current, section, cosphi = 1, x = 0 }) {
+  const { b } = systemFactors(system);
+  const t = phaseTerms(system, cosphi, x);
+  return b * length * current * (rho * t.pf / section + t.x * t.sin);
+}
+
+function powerLoss({ system, rho, length, current, section }) {
+  return systemFactors(system).n * rho * length * current * current / section;
+}
+
+function maxLengthForVoltageDrop({ system, rho, current, section, dUmax, cosphi = 1, x = 0 }) {
+  return dUmax / voltageDrop({ system, rho, length: 1, current, section, cosphi, x });
+}
+
+function maxLengthForPowerLoss({ system, rho, current, section, pMax }) {
+  return pMax / powerLoss({ system, rho, length: 1, current, section });
+}
+
+function temperatureFromAmpacity(thetaAmb, thetaMax, current, izCorrected) {
+  return thetaAmb + (thetaMax - thetaAmb) * Math.pow(current / izCorrected, 2);
+}
+
+// Closed-form solution of the heat balance with ρ(θ); Infinity = thermal runaway
+function temperatureFromHeatBalance({ current, section, h, thetaAmb, rho20, alpha }) {
+  const cooling = 0.002 * Math.sqrt(Math.PI) * h * Math.sqrt(section); // W/(m·K)
+  const a = current * current / (section * cooling);
+  const denominator = 1 - a * rho20 * alpha;
+  if (denominator <= 0) return Infinity;
+  return (thetaAmb + a * rho20 * (1 - 20 * alpha)) / denominator;
+}
+
+function skinDepthMm(rho, frequency) {
+  return Math.sqrt(rho * 1e-6 / (Math.PI * frequency * MU0)) * 1000;
+}
+
+function standardSection(section) {
+  if (!Number.isFinite(section)) return null;
+  const s = STD_SECTIONS.find(v => v >= section - 1e-9);
+  return s === undefined ? null : s;
+}
+
+/* ===================== Storage ===================== */
+
+const store = {
+  get(key) {
+    try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage unavailable */ }
+  }
+};
+
+let izTables = sanitizeIzTables(store.get(STORAGE_IZ)) || {};
+
+function sanitizeIzTables(data) {
+  if (!data || typeof data !== 'object') return null;
+  const out = {};
+  for (const combo of Object.keys(K_TABLE)) {
+    const src = data[combo];
+    if (!src || typeof src !== 'object') continue;
+    out[combo] = {};
+    for (const s of STD_SECTIONS) {
+      const v = Number(src[s]);
+      if (Number.isFinite(v) && v > 0) out[combo][s] = v;
+    }
+  }
+  return out;
+}
+
+/* ===================== DOM helpers ===================== */
+
+const $ = id => document.getElementById(id);
+const form = $('form');
+const fields = Array.from(form.querySelectorAll('[data-key]'));
+let errorCount = 0;
+let lastReport = null;
+
+function readRaw() {
+  const o = {};
+  for (const el of fields) {
+    const key = el.dataset.key;
+    if (el.type === 'checkbox') o[key] = el.checked;
+    else if (el.type === 'radio') { if (el.checked) o[key] = el.value; }
+    else o[key] = el.value;
+  }
+  return o;
+}
+
+function applyRaw(o) {
+  for (const el of fields) {
+    const key = el.dataset.key;
+    if (!(key in o)) continue;
+    if (el.type === 'checkbox') el.checked = !!o[key];
+    else if (el.type === 'radio') el.checked = el.value === o[key];
+    else el.value = o[key];
+  }
+}
+
+function fmt(n, digits = 2) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  return n.toLocaleString(LOCALES[currentLang] || 'en-US', { maximumFractionDigits: digits });
+}
+
+function fmtSection(s) {
+  return s == null ? '—' : fmt(s, 2) + ' mm²';
+}
+
+// Number written into an input field, with the decimal separator of the current language
+function numberToInput(v) {
+  const text = String(v);
+  return currentLang === 'fr' ? text.replace('.', ',') : text;
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+function materialName(material) {
+  return t('opt.material.' + material);
+}
+
+function insulationName(insulation) {
+  return t('opt.insulation.' + insulation);
+}
+
+function comboName(combo) {
+  const [mat, ins] = combo.split('-');
+  return t('iz.combo', { mat: materialName(mat), ins: insulationName(ins) });
+}
+
+function clearErrors() {
+  errorCount = 0;
+  form.querySelectorAll('[aria-invalid="true"]').forEach(el => el.removeAttribute('aria-invalid'));
+  form.querySelectorAll('.field-error').forEach(el => { el.textContent = ''; });
+}
+
+function fieldError(key, message) {
+  const el = $(key);
+  el.setAttribute('aria-invalid', 'true');
+  const slot = el.closest('.field') && el.closest('.field').querySelector('.field-error');
+  if (slot) slot.textContent = message;
+  errorCount++;
+  return NaN;
+}
+
+function readNumber(key, { min = -Infinity, minExclusive = false, max = Infinity } = {}) {
+  const v = parseNumber($(key).value);
+  if (!Number.isFinite(v)) return fieldError(key, t('err.number'));
+  if (minExclusive ? v <= min : v < min) return fieldError(key, t(minExclusive ? 'err.minExclusive' : 'err.min', { v: fmt(min, 6) }));
+  if (v > max) return fieldError(key, t('err.max', { v: fmt(max, 6) }));
+  return v;
+}
+
+const positive = key => readNumber(key, { min: 0, minExclusive: true });
+
+/* ===================== UI state ===================== */
+
+function comboKey() {
+  return $('material').value + '-' + $('insulation').value;
+}
+
+function updateVisibility() {
+  const ac = $('system').value !== 'dc';
+  document.querySelectorAll('.ac-only').forEach(el => { el.hidden = !ac; });
+  const mode = form.querySelector('input[name="loadMode"]:checked');
+  const powerMode = mode && mode.value === 'power';
+  document.querySelectorAll('.load-current').forEach(el => { el.hidden = powerMode; });
+  document.querySelectorAll('.load-power').forEach(el => { el.hidden = !powerMode; });
+  document.querySelectorAll('.rho-temp').forEach(el => { el.hidden = $('rhoMode').value !== 'temp'; });
+  document.querySelectorAll('.crit[data-crit]').forEach(el => {
+    const box = el.querySelector('input[data-key="' + el.dataset.crit + '"]');
+    el.classList.toggle('off', !box.checked);
+  });
+}
+
+function updateKField() {
+  const auto = $('kAuto').checked;
+  $('k').readOnly = auto;
+  if (auto) $('k').value = numberToInput(K_TABLE[comboKey()]);
+  const mat = $('material').value;
+  const ins = INSULATIONS[$('insulation').value];
+  let text = t('info.kFormula', { k: fmt(adiabaticK(mat, ins.thetaMax, ins.thetaF), 1), ti: ins.thetaMax, tf: ins.thetaF });
+  if ($('insulation').value === 'pvc') text += t('info.kLarge', { k: K_TABLE_LARGE[comboKey()] });
+  $('kInfo').textContent = text;
+}
+
+function saveSettings() {
+  store.set(STORAGE_SETTINGS, readRaw());
+}
+
+function onFormInput(e) {
+  const key = e.target.dataset && e.target.dataset.key;
+  if (key === 'material') {
+    const m = MATERIALS[$('material').value];
+    $('rho20').value = numberToInput(m.rho20);
+    $('alpha').value = numberToInput(m.alpha);
+    renderIzEditor();
+  }
+  if (key === 'insulation') {
+    $('thetaMax').value = numberToInput(INSULATIONS[$('insulation').value].thetaMax);
+    renderIzEditor();
+  }
+  updateVisibility();
+  updateKField();
+  saveSettings();
+  compute();
+}
+
+/* ===================== Ampacity table editor ===================== */
+
+function sectionId(s) {
+  return 'iz-' + String(s).replace('.', '_');
+}
+
+function renderIzEditor() {
+  const combo = comboKey();
+  const table = izTables[combo] || {};
+  $('izCombo').textContent = comboName(combo);
+  $('izBody').innerHTML = STD_SECTIONS.map(s =>
+    '<tr><th scope="row"><label for="' + sectionId(s) + '">' + escapeHtml(t('iz.rowLabel', { s: fmt(s, 2) })) + '</label></th>' +
+    '<td><input type="text" inputmode="decimal" id="' + sectionId(s) + '" data-section="' + s + '" value="' + (table[s] != null ? escapeHtml(numberToInput(table[s])) : '') + '"></td>' +
+    '<td class="num" data-corr="' + s + '">—</td></tr>'
+  ).join('');
+}
+
+function updateIzCorrected(factor) {
+  const table = izTables[comboKey()] || {};
+  $('izBody').querySelectorAll('td[data-corr]').forEach(td => {
+    const iz = table[td.dataset.corr];
+    td.textContent = iz > 0 && Number.isFinite(factor) ? fmt(iz * factor, 1) : '—';
+  });
+}
+
+function onIzInput(e) {
+  const el = e.target;
+  if (!el.dataset.section) return;
+  const combo = comboKey();
+  const table = izTables[combo] || (izTables[combo] = {});
+  const empty = el.value.trim() === '';
+  const v = parseNumber(el.value);
+  if (empty || !(v > 0)) delete table[el.dataset.section];
+  else table[el.dataset.section] = v;
+  if (!empty && !(v > 0)) el.setAttribute('aria-invalid', 'true');
+  else el.removeAttribute('aria-invalid');
+  store.set(STORAGE_IZ, izTables);
+  compute();
+}
+
+function exportIz() {
+  const blob = new Blob([JSON.stringify(izTables, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'cable-sizer-iz-tables.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function importIz(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function onLoad() {
+    let data = null;
+    try { data = sanitizeIzTables(JSON.parse(reader.result)); } catch (err) { data = null; }
+    if (!data || !Object.keys(data).length) {
+      $('izStatus').textContent = t('iz.importFailed');
+    } else {
+      Object.assign(izTables, data);
+      store.set(STORAGE_IZ, izTables);
+      renderIzEditor();
+      compute();
+      $('izStatus').textContent = t('iz.imported', { list: Object.keys(data).map(comboName).join(', ') });
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+let clearArmed = null;
+function clearIz() {
+  const btn = $('izClear');
+  if (!clearArmed) {
+    btn.textContent = t('iz.clearConfirm');
+    clearArmed = setTimeout(() => { btn.textContent = t('iz.clear'); clearArmed = null; }, 3000);
+    return;
+  }
+  clearTimeout(clearArmed);
+  clearArmed = null;
+  btn.textContent = t('iz.clear');
+  delete izTables[comboKey()];
+  store.set(STORAGE_IZ, izTables);
+  renderIzEditor();
+  compute();
+  $('izStatus').textContent = t('iz.cleared');
+}
+
+/* ===================== Main computation ===================== */
+
+function makeRow(id, required, note) {
+  const std = standardSection(required);
+  if (std == null) {
+    return { id, required, std: null, status: 'error', note: t('note.above630') };
+  }
+  return { id, required, std, status: 'ok', note };
+}
+
+function pickFinal(rows) {
+  let best = null;
+  for (const r of rows) {
+    if (r.std == null || r.status === 'error' || r.status === 'nodata') continue;
+    if (!best || r.std > best.std || (r.std === best.std && r.required > best.required)) best = r;
+  }
+  return best;
+}
+
+function criterionName(id) {
+  return t('crit.' + id + '.name');
+}
+
+function compute() {
+  clearErrors();
+  const s = readRaw();
+  const system = s.system;
+  const ac = system !== 'dc';
+  const combo = comboKey();
+
+  const U = positive('voltage');
+  const cosphi = ac ? readNumber('cosphi', { min: 0, minExclusive: true, max: 1 }) : 1;
+  let I, P;
+  if (s.loadMode === 'power') {
+    P = positive('power');
+    I = currentFromPower(P, U, cosphi, system);
+  } else {
+    I = positive('current');
+    P = activePower(U, I, cosphi, system);
+  }
+  const L = positive('length');
+  const x = ac ? readNumber('reactance', { min: 0 }) / 1000 : 0;
+  const f = ac ? positive('frequency') : NaN;
+
+  const rho20 = positive('rho20');
+  const alpha = readNumber('alpha', { min: 0 });
+  const thetaMax = readNumber('thetaMax', { min: 0, minExclusive: true, max: 400 });
+  const rho = s.rhoMode === 'iec'
+    ? rhoIecConvention(rho20)
+    : rhoAtTemperature(rho20, alpha, readNumber('condTemp', { min: -60, max: 400 }));
+  const ambient = readNumber('ambient', { min: -60, max: 200 });
+  if (Number.isFinite(ambient) && Number.isFinite(thetaMax) && ambient >= thetaMax) {
+    fieldError('ambient', t('err.belowThetaMax'));
+  }
+  const grouping = readNumber('grouping', { min: 0, minExclusive: true, max: 1 });
+  const kThetaAuto = temperatureCorrectionFactor(thetaMax, ambient);
+  const kTheta = String(s.kThetaOverride).trim() === '' ? kThetaAuto : positive('kThetaOverride');
+
+  let dUmax, pMax, h, isc, tsc, k, inRating;
+  if (s.vdOn) { const v = positive('vdValue'); dUmax = s.vdUnit === '%' ? v / 100 * U : v; }
+  if (s.lossOn) { const v = positive('lossValue'); pMax = s.lossUnit === '%' ? v / 100 * P : v; }
+  // h is also used for the temperature estimate when the Iz table is empty
+  if (s.heatOn) h = positive('heatH');
+  else h = parseNumber($('heatH').value) > 0 ? parseNumber($('heatH').value) : 10;
+  if (s.scOn) { isc = positive('isc'); tsc = positive('scTime'); k = positive('k'); }
+  if (s.protOn) inRating = positive('inRating');
+
+  const factor = kTheta * grouping;
+  $('currentInfo').textContent = Number.isFinite(I)
+    ? t(s.loadMode === 'power' ? 'info.currentFromPower' : 'info.current', { i: fmt(I, 2), p: fmt(P, 0) })
+    : '—';
+  $('rhoInfo').textContent = Number.isFinite(rho) ? fmt(rho, 5) + ' Ω·mm²/m' : '—';
+  $('kThetaInfo').textContent = fmt(kThetaAuto, 3);
+  $('factorInfo').textContent = fmt(factor, 3);
+  updateIzCorrected(factor);
+
+  if (errorCount > 0) {
+    renderInvalid();
+    return;
+  }
+
+  const izTable = izTables[combo] || {};
+  const hasIz = Object.keys(izTable).length > 0;
+  const rows = [];
+  const warnings = [];
+
+  if (s.vdOn) {
+    const r = sectionForVoltageDrop({ system, rho, length: L, current: I, dUmax, cosphi, x });
+    if (r.error) {
+      rows.push({ id: 'vd', required: NaN, std: null, status: 'error', note: t('note.vdImpossible') });
+      warnings.push({ cls: 'err', text: t('warn.vd', { msg: t('note.vdImpossible'), d: fmt(r.denominator, 3) }) });
+    } else {
+      rows.push(makeRow('vd', r.section, t('note.vd', { v: fmt(dUmax, 2) })));
+    }
+  }
+  if (s.lossOn) {
+    rows.push(makeRow('loss', sectionForPowerLoss({ system, rho, length: L, current: I, pMax }), t('note.loss', { v: fmt(pMax, 1) })));
+  }
+  if (s.heatOn) {
+    const deltaT = thetaMax - ambient;
+    const rhoHot = rhoAtTemperature(rho20, alpha, thetaMax);
+    rows.push(makeRow('heat', sectionForHeating({ current: I, rho: rhoHot, h, deltaT }), t('note.heat', { dt: fmt(deltaT, 1), h: fmt(h, 1) })));
+  }
+  if (s.izOn) {
+    if (!hasIz) {
+      rows.push({ id: 'iz', required: NaN, std: null, status: 'nodata', note: t('note.fillIz') });
+    } else {
+      const std = sectionForAmpacity(izTable, I, factor);
+      rows.push(std == null
+        ? { id: 'iz', required: NaN, std: null, status: 'error', note: t('note.izNone', { i: fmt(I, 1) }) }
+        : { id: 'iz', required: std, std, status: 'ok', note: t('note.izOk', { iz: fmt(izTable[std] * factor, 1), i: fmt(I, 1) }) });
+    }
+  }
+  if (s.scOn) {
+    rows.push(makeRow('sc', sectionForShortCircuit({ isc, time: tsc, k }), t('note.sc', { k: fmt(k, 1) })));
+  }
+  if (s.protOn) {
+    let row;
+    if (!hasIz) {
+      row = { id: 'prot', required: NaN, std: null, status: 'nodata', note: t('note.fillIz') };
+    } else {
+      const std = sectionForAmpacity(izTable, inRating, factor);
+      row = std == null
+        ? { id: 'prot', required: NaN, std: null, status: 'error', note: t('note.protNone', { in: fmt(inRating, 1) }) }
+        : { id: 'prot', required: std, std, status: 'ok', note: t('note.protOk', { in: fmt(inRating, 1), iz: fmt(izTable[std] * factor, 1) }) };
+    }
+    if (I > inRating) {
+      row.status = 'fail';
+      row.note = t('note.protFail', { i: fmt(I, 1), in: fmt(inRating, 1) });
+      warnings.push({ cls: 'err', text: t('warn.protCurrent') });
+    }
+    rows.push(row);
+  }
+
+  let final = pickFinal(rows);
+  // PVC above 300 mm²: lower final short-circuit temperature, hence lower k
+  if (final && s.scOn && s.kAuto && s.insulation === 'pvc' && final.std > 300) {
+    const kLarge = K_TABLE_LARGE[combo];
+    const idx = rows.findIndex(r => r.id === 'sc');
+    rows[idx] = makeRow('sc', sectionForShortCircuit({ isc, time: tsc, k: kLarge }), t('note.scLarge', { k: kLarge }));
+    final = pickFinal(rows);
+  }
+  if (final) final.governing = true;
+
+  for (const r of rows) {
+    if (r.status === 'nodata') warnings.push({ cls: '', text: t('warn.noData', { name: criterionName(r.id), combo: comboName(combo) }) });
+    else if (r.status === 'error' && r.id !== 'vd') warnings.push({ cls: 'err', text: t('warn.rowError', { name: criterionName(r.id), note: r.note }) });
+  }
+
+  const report = {
+    system, U, I, P, cosphi, L, x, f, rho, rho20, alpha, thetaMax, ambient, kTheta, factor,
+    loadMode: s.loadMode, combo, rows, final, warnings, summary: []
+  };
+
+  if (final) {
+    const S = final.std;
+    const dU = voltageDrop({ system, rho, length: L, current: I, section: S, cosphi, x });
+    const loss = powerLoss({ system, rho, length: L, current: I, section: S });
+    report.summary.push([t('sum.voltageDrop'), t('sum.voltageDropValue', { v: fmt(dU, 3), p: fmt(dU / U * 100, 2) })]);
+    report.summary.push([t('sum.powerLoss'), t('sum.powerLossValue', { v: fmt(loss, 1), p: fmt(loss / P * 100, 2) })]);
+
+    let temp, tempSource;
+    if (hasIz && izTable[S] > 0) {
+      temp = temperatureFromAmpacity(ambient, thetaMax, I, izTable[S] * factor);
+      tempSource = t('sum.fromIz');
+    } else {
+      temp = temperatureFromHeatBalance({ current: I, section: S, h, thetaAmb: ambient, rho20, alpha });
+      tempSource = t('sum.fromModel', { h: fmt(h, 1) });
+    }
+    report.summary.push([t('sum.temperature'), Number.isFinite(temp)
+      ? t('sum.temperatureValue', { t: fmt(temp, 1), src: tempSource })
+      : t('sum.runaway', { src: tempSource })]);
+    if (!(temp <= thetaMax)) warnings.push({ cls: 'err', text: t('warn.temperature', { t: fmt(thetaMax, 0) }) });
+
+    const lengths = [];
+    if (s.vdOn) lengths.push(['sum.lengthVd', maxLengthForVoltageDrop({ system, rho, current: I, section: S, dUmax, cosphi, x })]);
+    if (s.lossOn) lengths.push(['sum.lengthLoss', maxLengthForPowerLoss({ system, rho, current: I, section: S, pMax })]);
+    if (lengths.length) {
+      const min = Math.min(...lengths.map(l => l[1]));
+      const detail = lengths.map(l => t(l[0], { l: fmt(l[1], 1) })).join(', ');
+      report.summary.push([t('sum.maxLength'), t('sum.maxLengthValue', { l: fmt(min, 1), detail })]);
+    } else {
+      report.summary.push([t('sum.maxLength'), t('sum.maxLengthNone')]);
+    }
+
+    if (s.protOn && hasIz && izTable[S] > 0) {
+      const izc = izTable[S] * factor;
+      report.summary.push([t('sum.izSelected'), t('sum.izValue', { v: fmt(izc, 1) })]);
+      if (inRating > izc) warnings.push({ cls: 'err', text: t('warn.protIz', { in: fmt(inRating, 1), iz: fmt(izc, 1), s: fmtSection(S) }) });
+    }
+
+    if (ac) {
+      const delta = skinDepthMm(rho, f);
+      const radius = Math.sqrt(S / Math.PI);
+      report.summary.push([t('sum.skin'), t('sum.skinValue', { d: fmt(delta, 2), r: fmt(radius, 2) })]);
+      if (radius > delta) warnings.push({ cls: '', text: t('warn.skin', { r: fmt(radius, 2), d: fmt(delta, 2), f: fmt(f, 0) }) });
+    }
+    report.summary.push([t('sum.current'), t('sum.currentValue', { v: fmt(I, 2) })]);
+    report.summary.push([t('sum.rho'), t('sum.rhoValue', { v: fmt(rho, 5) })]);
+  }
+  if (s.heatOn) warnings.push({ cls: 'note', text: t('warn.heatNote') });
+
+  lastReport = report;
+  render(report);
+}
+
+/* ===================== Rendering ===================== */
+
+function requiredText(row) {
+  if (row.id === 'iz' || row.id === 'prot') return row.std != null ? t('res.table') : '—';
+  return fmtSection(Number.isFinite(row.required) ? row.required : null);
+}
+
+function render(report) {
+  const { rows, final, summary, warnings } = report;
+  $('critBody').innerHTML = rows.length
+    ? rows.map(r =>
+      '<tr class="' + (r.governing ? 'governing' : '') + '">' +
+      '<td>' + escapeHtml(criterionName(r.id)) + '<span class="row-note">' + escapeHtml(r.note || '') + '</span></td>' +
+      '<td class="num">' + escapeHtml(requiredText(r)) + '</td>' +
+      '<td class="num">' + escapeHtml(fmtSection(r.std)) + '</td>' +
+      '<td><span class="badge s-' + r.status + '">' + escapeHtml(t('status.' + r.status)) + '</span>' +
+      (r.governing ? ' <span class="badge s-governing">' + escapeHtml(t('status.governing')) + '</span>' : '') + '</td></tr>'
+    ).join('')
+    : '<tr><td colspan="4">' + escapeHtml(t('res.enableOne')) + '</td></tr>';
+
+  if (final) {
+    const name = criterionName(final.id);
+    const showRequired = Number.isFinite(final.required) && final.id !== 'iz' && final.id !== 'prot';
+    $('heroValue').textContent = fmtSection(final.std);
+    $('heroSub').textContent = showRequired
+      ? t('res.governingRequired', { name, s: fmtSection(final.required) })
+      : t('res.governing', { name });
+    $('pillValue').textContent = t('res.pillValue', { s: fmtSection(final.std), name });
+  } else {
+    $('heroValue').textContent = '—';
+    $('heroSub').textContent = t(rows.length ? 'res.noValid' : 'res.enableOne');
+    $('pillValue').textContent = '—';
+  }
+
+  $('summary').innerHTML = summary.map(([k, v]) => '<dt>' + escapeHtml(k) + '</dt><dd>' + escapeHtml(v) + '</dd>').join('');
+  $('warnings').innerHTML = warnings.map(w => '<li class="' + w.cls + '">' + escapeHtml(w.text) + '</li>').join('');
+}
+
+function renderInvalid() {
+  lastReport = null;
+  $('critBody').innerHTML = '<tr><td colspan="4">' + escapeHtml(t('res.fixInputs')) + '</td></tr>';
+  $('heroValue').textContent = '—';
+  $('heroSub').textContent = t('res.invalid');
+  $('pillValue').textContent = t('res.invalid');
+  $('summary').innerHTML = '';
+  $('warnings').innerHTML = '';
+}
+
+/* ===================== Copy / reset / theme ===================== */
+
+function reportToText(r) {
+  const lines = [];
+  lines.push(t('report.title'));
+  let load = t('report.system', { sys: t('opt.system.' + r.system), u: fmt(r.U, 2), i: fmt(r.I, 2) });
+  if (r.system !== 'dc') load += t('report.ac', { pf: fmt(r.cosphi, 3), x: fmt(r.x * 1000, 3), f: fmt(r.f, 1) });
+  lines.push(load + t('report.power', { p: fmt(r.P, 0) }));
+  lines.push(t('report.line', { l: fmt(r.L, 2) }));
+  const [mat, ins] = r.combo.split('-');
+  lines.push(t('report.conductor', { mat: materialName(mat), ins: insulationName(ins), rho: fmt(r.rho, 5), t: fmt(r.thetaMax, 0) }));
+  lines.push(t('report.install', { t: fmt(r.ambient, 1), k: fmt(r.kTheta, 3), f: fmt(r.factor, 3) }));
+  lines.push('');
+  lines.push(t('report.header'));
+  for (const row of r.rows) {
+    lines.push(criterionName(row.id) + ' | ' + requiredText(row) + ' | ' + fmtSection(row.std) + ' | ' +
+      t('status.' + row.status) + (row.governing ? t('report.governingFlag') : '') + (row.note ? ' — ' + row.note : ''));
+  }
+  lines.push('');
+  lines.push(t('report.recommended', {
+    v: r.final ? t('report.recommendedValue', { s: fmtSection(r.final.std), name: criterionName(r.final.id) }) : '—'
+  }));
+  for (const [k, v] of r.summary) lines.push(k + ': ' + v);
+  if (r.warnings.length) {
+    lines.push('');
+    lines.push(t('report.warnings'));
+    for (const w of r.warnings) lines.push('- ' + w.text);
+  }
+  lines.push('');
+  lines.push(t('report.disclaimer'));
+  return lines.join('\n');
+}
+
+let toastTimer = null;
+function toast(message) {
+  const el = $('toast');
+  el.textContent = message;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  ta.remove();
+  return ok;
+}
+
+function copyResults() {
+  if (!lastReport) { toast(t('toast.nothing')); return; }
+  const text = reportToText(lastReport);
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(
+      () => toast(t('toast.copied')),
+      () => toast(t(fallbackCopy(text) ? 'toast.copied' : 'toast.copyFailed'))
+    );
+  } else {
+    toast(t(fallbackCopy(text) ? 'toast.copied' : 'toast.copyFailed'));
+  }
+}
+
+function resetSettings() {
+  applyRaw(DEFAULTS);
+  renderIzEditor();
+  updateVisibility();
+  updateKField();
+  saveSettings();
+  compute();
+  toast(t('toast.reset'));
+}
+
+const THEMES = ['auto', 'light', 'dark'];
+let currentTheme = 'auto';
+function applyTheme(theme) {
+  currentTheme = THEMES.includes(theme) ? theme : 'auto';
+  if (currentTheme === 'auto') delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = currentTheme;
+  $('btnTheme').textContent = t('btn.theme', { mode: t('theme.' + currentTheme) });
+}
+function cycleTheme() {
+  const next = THEMES[(THEMES.indexOf(currentTheme) + 1) % THEMES.length];
+  applyTheme(next);
+  store.set(STORAGE_THEME, next);
+}
+
+/* ===================== Self-tests (?test) ===================== */
+
+function runTests() {
+  const results = [];
+  function check(name, actual, expected, tolerance) {
+    const pass = typeof expected === 'number' && tolerance !== undefined
+      ? Math.abs(actual - expected) <= tolerance
+      : actual === expected;
+    results.push({ test: name, actual, expected, pass });
+    console.assert(pass, name, 'actual:', actual, 'expected:', expected);
+  }
+
+  const dc = sectionForVoltageDrop({ system: 'dc', rho: 0.0225, length: 5, current: 10, dUmax: 0.03 * 12 }).section;
+  check('DC 12 V, 10 A, 5 m, ρ 0.0225, ΔU 3 % → section', dc, 6.25, 1e-9);
+  check('DC → standard section', standardSection(dc), 10);
+
+  const sc = sectionForShortCircuit({ isc: 3000, time: 0.1, k: 115 });
+  check('Isc 3000 A, 0.1 s, k 115 → section', sc, 8.25, 0.005);
+  check('Short-circuit → standard section', standardSection(sc), 10);
+
+  check('k Cu/PVC 70→160 °C ≈ 115', adiabaticK('cu', 70, 160), 115, 0.5);
+  check('k Cu/XLPE 90→250 °C ≈ 143', adiabaticK('cu', 90, 250), 143, 0.5);
+  check('k Al/PVC 70→160 °C ≈ 76', adiabaticK('al', 70, 160), 76, 0.5);
+  check('k Al/XLPE 90→250 °C ≈ 94', adiabaticK('al', 90, 250), 94, 1);
+  check('k Cu/PVC > 300 mm² 70→140 °C ≈ 103', adiabaticK('cu', 70, 140), 103, 0.5);
+  check('k Al/PVC > 300 mm² 70→140 °C ≈ 68', adiabaticK('al', 70, 140), 68, 0.5);
+
+  check('ρ Cu at 70 °C', rhoAtTemperature(0.017241, 0.00393, 70), 0.0206289, 1e-6);
+  check('Power loss DC 10 A, 5 m, 10 W → 2.25 mm²', sectionForPowerLoss({ system: 'dc', rho: 0.0225, length: 5, current: 10, pMax: 10 }), 2.25, 1e-9);
+  check('AC negative denominator flagged', !!sectionForVoltageDrop({ system: 'ac1', rho: 0.0225, length: 1000, current: 100, dUmax: 1, cosphi: 0.8, x: 0.00008 }).error, true);
+  check('Standard section of exactly 6 → 6', standardSection(6), 6);
+  check('Standard section above 630 → null', standardSection(700), null);
+
+  const sh = sectionForHeating({ current: 16, rho: rhoAtTemperature(0.017241, 0.00393, 70), h: 10, deltaT: 40 });
+  check('Heat balance at sized section returns θmax', temperatureFromHeatBalance({ current: 16, section: sh, h: 10, thetaAmb: 30, rho20: 0.017241, alpha: 0.00393 }), 70, 1e-6);
+
+  check('parseNumber "6,25"', parseNumber('6,25'), 6.25, 1e-12);
+  check('parseNumber "6.25"', parseNumber('6.25'), 6.25, 1e-12);
+  check('parseNumber " -5 "', parseNumber(' -5 '), -5, 1e-12);
+  check('parseNumber "1e-3"', parseNumber('1e-3'), 0.001, 1e-15);
+  check('parseNumber ",5"', parseNumber(',5'), 0.5, 1e-12);
+  check('parseNumber "abc" rejected', Number.isNaN(parseNumber('abc')), true);
+  check('parseNumber "1,2,3" rejected', Number.isNaN(parseNumber('1,2,3')), true);
+  check('parseNumber "" rejected', Number.isNaN(parseNumber('')), true);
+
+  const refKeys = Object.keys(DICTIONARIES.en || {});
+  for (const lang of LANGUAGES) {
+    const keys = Object.keys(DICTIONARIES[lang]);
+    const missing = refKeys.filter(key => !keys.includes(key));
+    const extra = keys.filter(key => !refKeys.includes(key));
+    check('Translations "' + lang + '": missing keys', missing.join(', '), '');
+    check('Translations "' + lang + '": unknown keys', extra.join(', '), '');
+  }
+  const usedKeys = Array.from(document.querySelectorAll('[data-i18n]')).map(el => el.dataset.i18n)
+    .concat(Array.from(document.querySelectorAll('[data-i18n-attr]')).flatMap(el => el.dataset.i18nAttr.split(';').map(p => p.split(':')[1].trim())));
+  check('HTML keys present in "en"', usedKeys.filter(key => !refKeys.includes(key)).join(', '), '');
+
+  const passed = results.filter(r => r.pass).length;
+  console.table(results);
+  console.log('Cable Sizer self-tests: ' + passed + '/' + results.length + ' passed');
+  const banner = $('testBanner');
+  banner.hidden = false;
+  banner.textContent = t('test.banner', { p: passed, n: results.length });
+  banner.style.borderColor = passed === results.length ? 'var(--ok)' : 'var(--err)';
+}
+
+/* ===================== Init ===================== */
+
+function init() {
+  const savedLang = store.get(STORAGE_LANG);
+  currentLang = LANGUAGES.includes(savedLang) ? savedLang : DEFAULT_LANG;
+  const saved = store.get(STORAGE_SETTINGS);
+  applyRaw(Object.assign({}, DEFAULTS, saved && typeof saved === 'object' ? saved : {}));
+  applyTranslations();
+  applyTheme(store.get(STORAGE_THEME));
+
+  form.addEventListener('input', onFormInput);
+  form.addEventListener('submit', e => e.preventDefault());
+  $('izBody').addEventListener('input', onIzInput);
+  $('izExport').addEventListener('click', exportIz);
+  $('izImportBtn').addEventListener('click', () => $('izImport').click());
+  $('izImport').addEventListener('change', importIz);
+  $('izClear').addEventListener('click', clearIz);
+  $('btnLang').addEventListener('click', cycleLanguage);
+  $('btnCopy').addEventListener('click', copyResults);
+  $('btnReset').addEventListener('click', resetSettings);
+  $('btnTheme').addEventListener('click', cycleTheme);
+  $('mobilePill').addEventListener('click', () => $('results').scrollIntoView({ behavior: 'smooth' }));
+
+  renderIzEditor();
+  updateVisibility();
+  updateKField();
+  compute();
+
+  if (new URLSearchParams(location.search).has('test')) runTests();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
