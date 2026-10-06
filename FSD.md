@@ -82,6 +82,10 @@ Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52
   de milliers (`1,500` = 1,5) ; notation `1e-3` acceptée. Les champs de température gardent le clavier standard (signe moins sur iOS).
 - Ajouter une langue : copier le bloc `en` de `i18n.js` sous un nouveau code et ajouter la locale dans `LOCALES` (`index.html`).
 
+## 5quater. Manuel
+- Bouton « Manual / Manuel » dans la barre du haut et lien en pied de page : ouvrent dans un nouvel onglet le manuel
+  GitHub de la langue courante (`docs/MANUAL.en.md` / `docs/MANUEL.fr.md`, constante `MANUAL_URLS`).
+
 ## 5ter. Avertissement de non-garantie
 - Bandeau permanent (non masquable) sous l'en-tête : valeurs indicatives non garanties, vérification obligatoire,
   responsabilité entière de l'utilisateur, aucune responsabilité de l'auteur. Repris dans le pied de page,
@@ -128,5 +132,5 @@ calculs, méthodes de référence, données Iz (nombre de tables, croissance, va
 
 ## 10. Déploiement
 - Hébergement statique : `index.html`, `i18n.js`, `iz-data.js`.
-- Vercel : https://conducteur-section.vercel.app/ — projet importé depuis le dépôt GitHub privé, preset « Other », sans build ; chaque push sur `main` redéploie.
+- Vercel : https://conducteur-section.vercel.app/ — projet importé depuis le dépôt GitHub public https://github.com/john3volts3/Conducteur-Section (licence MIT), preset « Other », sans build ; chaque push sur `main` redéploie.
   `.vercelignore` (liste blanche) empêche la publication des documents internes.

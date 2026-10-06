@@ -32,6 +32,10 @@
 | 2026-10-06 | `index.html`, `i18n.js` | Avertissement « aucune garantie / responsabilité de l'utilisateur » : bandeau permanent en haut de l'app, pied de page, en tête et en fin du texte copié (EN/FR). |
 | 2026-10-06 | `README.md`, `README.fr.md`, `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Encadré d'avertissement « aucune garantie » en tête et en fin de document. |
 | 2026-10-06 | `index.html`, `i18n.js` | Carte Ligne : aide de longueur raccourcie et placée à droite des champs (flex, passe dessous sur mobile) ; texte complet déplacé dans une bulle ⓘ (`help.length`). |
+| 2026-10-06 | (dépôt) | Audit avant publication : historique complet sans e-mail personnel (noreply), sans chemin local, IP ni secret ; aucun workflow ni secret GitHub. |
+| 2026-10-06 | `LICENSE` | Création : licence MIT. |
+| 2026-10-06 | `index.html`, `i18n.js` | Bouton « Manual / Manuel » (barre du haut) et lien en pied de page vers le manuel GitHub de la langue courante ; +1 auto-test (46). |
+| 2026-10-06 | `README.md`, `README.fr.md`, `FSD.md` | Section Licence (MIT, valeurs IEC reproduites à titre de référence), dépôt désormais public. |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).
@@ -47,3 +51,4 @@ Décisions validées par l'utilisateur :
 - Facteurs de groupement normalisés abandonnés dans l'UI (saisie manuelle conservée) ; tables vérifiées gardées dans `grouping-data.js`.
 - Pas de bouton de mise à jour des valeurs Iz : version des données affichée à la place.
 - Déploiement Vercel depuis GitHub (dépôt privé), `.vercelignore` en liste blanche.
+- Dépôt GitHub rendu public (option C) après audit ; licence MIT ; `grouping-data.js` conservé.

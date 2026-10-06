@@ -55,6 +55,7 @@ works offline by double-clicking `index.html`, and can be hosted as-is on any st
 | `i18n.js` | All displayed texts (English, French) |
 | `iz-data.js` | Standard ampacity values (optional: without it the Iz tables are empty) |
 | `grouping-data.js` | IEC grouping factors kept for a future version (not used by the app yet) |
+| `LICENSE` | MIT license |
 | `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | User and technical manual (English, French) |
 | `FSD.md`, `JOURNAL.md` | Internal functional specification and change log (French) |
 
@@ -135,6 +136,12 @@ The detailed specification is in [FSD.md](FSD.md) (French).
 - "Inside wooden furniture" is not listed in the standard: method A1/A2 is a conservative assumption.
 - AC resistance is taken equal to the DC resistance (skin effect is only flagged).
 - No fault-loop (protection of persons) verification.
+
+## License
+
+[MIT](LICENSE) — free to use, modify and distribute with attribution, **provided "as is", without warranty of any
+kind** (see the disclaimer). The ampacity and grouping values are reproduced from IEC 60364-5-52 for reference;
+the standard itself remains the property of the IEC.
 
 ## Deployment
 

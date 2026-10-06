@@ -59,6 +59,7 @@ les formules (×2 en continu et en monophasé, ×√3 en triphasé équilibré).
 | `i18n.js` | Tous les textes affichés (anglais, français) |
 | `iz-data.js` | Courants admissibles normalisés (facultatif : sans lui, les tables Iz sont vides) |
 | `grouping-data.js` | Facteurs de groupement IEC conservés pour une version future (pas encore utilisés) |
+| `LICENSE` | Licence MIT |
 | `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Manuel utilisateur et technique (anglais, français) |
 | `FSD.md`, `JOURNAL.md` | Spécification fonctionnelle et journal des modifications (internes) |
 
@@ -140,6 +141,12 @@ La spécification détaillée se trouve dans [FSD.md](FSD.md).
 - « Dans un meuble en bois » ne figure pas dans la norme : la méthode A1/A2 est une hypothèse prudente.
 - La résistance en alternatif est prise égale à la résistance en continu (l'effet de peau est seulement signalé).
 - Pas de vérification de la boucle de défaut (protection des personnes).
+
+## Licence
+
+[MIT](LICENSE) — utilisation, modification et diffusion libres avec mention de l'auteur, **fourni « tel quel », sans
+aucune garantie** (voir l'avertissement). Les valeurs de courant admissible et de groupement sont reproduites de
+l'IEC 60364-5-52 à titre de référence ; la norme elle-même reste la propriété de l'IEC.
 
 ## Mise en ligne
 

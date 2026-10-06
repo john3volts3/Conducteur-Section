@@ -95,6 +95,8 @@ h2 { font-size: 1rem; margin-bottom: 0.75rem; }
   cursor: pointer;
 }
 .btn:hover { border-color: var(--accent); }
+a.btn { display: inline-block; text-decoration: none; }
+footer a { color: var(--accent); }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
 .btn-small { font-size: 0.8rem; padding: 0.3rem 0.6rem; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -251,6 +253,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
     </div>
   </div>
   <div class="actions">
+    <a id="btnManual" class="btn manual-link" target="_blank" rel="noopener" data-i18n="btn.manual" data-i18n-attr="title:btn.manualTitle"></a>
     <button type="button" id="btnLang" class="btn" data-i18n-attr="title:lang.switchTitle;aria-label:lang.switchTitle"></button>
     <button type="button" id="btnTheme" class="btn"></button>
     <button type="button" id="btnCopy" class="btn btn-primary" data-i18n="btn.copy"></button>
@@ -601,6 +604,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
 
 <footer>
   <span data-i18n="footer.disclaimer"></span>
+  <a class="manual-link" target="_blank" rel="noopener" data-i18n="footer.manual"></a>.
   <span data-i18n="footer.testsBefore"></span> <code>?test</code> <span data-i18n="footer.testsAfter"></span>
 </footer>
 
@@ -675,6 +679,9 @@ const DEFAULTS = {
 const DICTIONARIES = typeof I18N !== 'undefined' ? I18N : { en: {} };
 const LANGUAGES = Object.keys(DICTIONARIES);
 const LOCALES = { en: 'en-US', fr: 'fr-FR' };
+// User and technical manual per language, read on GitHub (public repository)
+const MANUAL_BASE = 'https://github.com/john3volts3/Conducteur-Section/blob/main/docs/';
+const MANUAL_URLS = { en: MANUAL_BASE + 'MANUAL.en.md', fr: MANUAL_BASE + 'MANUEL.fr.md' };
 const DEFAULT_LANG = 'en';
 let currentLang = DEFAULT_LANG;
 
@@ -695,6 +702,7 @@ function applyTranslations() {
     if (icon) el.append(icon);
   });
   document.querySelectorAll('.help-icon').forEach(btn => btn.setAttribute('aria-label', t('help.iconLabel')));
+  document.querySelectorAll('.manual-link').forEach(a => { a.href = MANUAL_URLS[currentLang] || MANUAL_URLS.en; });
   hideHelp();
   document.querySelectorAll('[data-i18n-attr]').forEach(el => {
     el.dataset.i18nAttr.split(';').forEach(pair => {
@@ -1712,6 +1720,7 @@ function runTests() {
   const usedKeys = Array.from(document.querySelectorAll('[data-i18n]')).map(el => el.dataset.i18n)
     .concat(Array.from(document.querySelectorAll('[data-help]')).map(el => el.dataset.help))
     .concat(Array.from(document.querySelectorAll('[data-i18n-attr]')).flatMap(el => el.dataset.i18nAttr.split(';').map(p => p.split(':')[1].trim())));
+  check('Manual link defined for every language', LANGUAGES.filter(lang => !MANUAL_URLS[lang]).join(', '), '');
   check('HTML keys present in "en"', usedKeys.filter(key => !refKeys.includes(key)).join(', '), '');
 
   const passed = results.filter(r => r.pass).length;

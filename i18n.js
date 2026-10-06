@@ -15,6 +15,9 @@ const I18N = {
     'theme.auto': 'Auto',
     'theme.light': 'Light',
     'theme.dark': 'Dark',
+    'btn.manual': 'Manual',
+    'btn.manualTitle': 'Open the user and technical manual (GitHub, new tab)',
+    'footer.manual': 'User and technical manual',
     'btn.copy': 'Copy results',
     'btn.reset': 'Reset',
 
@@ -301,6 +304,9 @@ const I18N = {
     'theme.auto': 'Auto',
     'theme.light': 'Clair',
     'theme.dark': 'Sombre',
+    'btn.manual': 'Manuel',
+    'btn.manualTitle': 'Ouvrir le manuel utilisateur et technique (GitHub, nouvel onglet)',
+    'footer.manual': 'Manuel utilisateur et technique',
     'btn.copy': 'Copier les résultats',
     'btn.reset': 'Réinitialiser',
 
