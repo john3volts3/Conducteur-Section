@@ -31,6 +31,7 @@
 | 2026-10-06 | `FSD.md` | Section aide contextuelle, fichiers du manuel. |
 | 2026-10-06 | `index.html`, `i18n.js` | Avertissement « aucune garantie / responsabilité de l'utilisateur » : bandeau permanent en haut de l'app, pied de page, en tête et en fin du texte copié (EN/FR). |
 | 2026-10-06 | `README.md`, `README.fr.md`, `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Encadré d'avertissement « aucune garantie » en tête et en fin de document. |
+| 2026-10-06 | `index.html`, `i18n.js` | Carte Ligne : aide de longueur raccourcie et placée à droite des champs (flex, passe dessous sur mobile) ; texte complet déplacé dans une bulle ⓘ (`help.length`). |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).

@@ -126,6 +126,10 @@ form { display: grid; gap: var(--gap); margin: 0; }
   grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
   gap: 0.75rem;
 }
+/* Line card: fields keep their width, the length hint fills the rest of the row (wraps below on narrow screens) */
+.line-grid { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.75rem; }
+.line-grid > .field { flex: 0 1 10rem; }
+.line-hint { flex: 1 1 15rem; margin: 0; align-self: center; }
 .field { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
 .field label, .field legend { font-size: 0.85rem; color: var(--muted); }
 fieldset.field { border: 0; margin: 0; padding: 0; }
@@ -308,12 +312,11 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
 
       <section class="card" aria-labelledby="h-line">
         <h2 id="h-line" data-i18n="sec.line"></h2>
-        <div class="grid">
+        <div class="line-grid">
           <div class="field">
-            <label for="length" data-i18n="lbl.length"></label>
+            <label for="length" data-help="help.length" data-i18n="lbl.length"></label>
             <input id="length" data-key="length" type="text" inputmode="decimal">
             <small class="field-error"></small>
-            <small class="hint" data-i18n="hint.length"></small>
           </div>
           <div class="field ac-only">
             <label for="reactance" data-help="help.reactance" data-i18n="lbl.reactance"></label>
@@ -325,6 +328,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             <input id="frequency" data-key="frequency" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
+          <p class="hint line-hint" data-i18n="hint.length"></p>
         </div>
       </section>
 

@@ -36,7 +36,8 @@ const I18N = {
 
     'sec.line': 'Line',
     'lbl.length': 'Cable length, one way (m)',
-    'hint.length': 'Enter the cable length (e.g. 1 m for a 1 m two-core cable). The return conductor is included by the formulas: ×2 in DC and single-phase, ×√3 in balanced three-phase.',
+    'hint.length': 'Do not double it: the return conductor is already included (×2 DC and single-phase, ×√3 three-phase).',
+    'help.length': 'Enter the cable length (e.g. 1 m for a 1 m two-core cable). The return conductor is included by the formulas: ×2 in DC and single-phase, ×√3 in balanced three-phase.',
     'lbl.reactance': 'Reactance (mΩ/m)',
     'lbl.frequency': 'Frequency (Hz)',
 
@@ -321,7 +322,8 @@ const I18N = {
 
     'sec.line': 'Ligne',
     'lbl.length': 'Longueur du câble, aller simple (m)',
-    'hint.length': 'Saisir la longueur du câble (ex. 1 m pour un câble 2 conducteurs de 1 m). Le conducteur de retour est pris en compte par les formules : ×2 en continu et en monophasé, ×√3 en triphasé équilibré.',
+    'hint.length': 'Ne pas la doubler : le conducteur de retour est déjà inclus (×2 continu et monophasé, ×√3 triphasé).',
+    'help.length': 'Saisir la longueur du câble (ex. 1 m pour un câble 2 conducteurs de 1 m). Le conducteur de retour est pris en compte par les formules : ×2 en continu et en monophasé, ×√3 en triphasé équilibré.',
     'lbl.reactance': 'Réactance (mΩ/m)',
     'lbl.frequency': 'Fréquence (Hz)',
 
