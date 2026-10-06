@@ -193,6 +193,12 @@ dl.summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums
 .warnings li.err { border-left-color: var(--err); }
 .warnings li.note { border-left-color: var(--muted); }
 
+.disclaimer {
+  margin: 1rem 1rem 0; padding: 0.75rem 1rem; border-radius: var(--radius);
+  border: 1px solid var(--err); border-left-width: 6px; background: var(--surface); font-size: 0.88rem;
+}
+.disclaimer-title { display: block; color: var(--err); font-size: 1rem; margin-bottom: 0.25rem; }
+@media (min-width: 82rem) { .disclaimer { max-width: 80rem; margin: 1rem auto 0; } }
 .test-banner { margin: 0 1rem; padding: 0.5rem 0.75rem; border-radius: 0.4rem; font-size: 0.85rem; background: var(--surface-2); border: 1px solid var(--border); }
 .toast {
   position: fixed; left: 50%; bottom: 4.5rem; transform: translateX(-50%);
@@ -200,6 +206,21 @@ dl.summary dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums
   font-size: 0.88rem; opacity: 0; pointer-events: none; transition: opacity 0.2s;
 }
 .toast.show { opacity: 1; }
+
+[data-help] { cursor: help; }
+.help-icon {
+  display: inline-flex; align-items: center; justify-content: center; flex: none;
+  width: 1.05rem; height: 1.05rem; margin-left: 0.3rem; padding: 0; vertical-align: middle;
+  border: 1px solid var(--muted); border-radius: 50%; background: transparent; color: var(--muted);
+  font: 600 0.68rem/1 system-ui, sans-serif; cursor: help;
+}
+.help-icon:hover, .help-icon[aria-expanded="true"] { color: var(--accent); border-color: var(--accent); }
+.help-tip {
+  position: fixed; z-index: 20; max-width: min(22rem, calc(100vw - 2rem));
+  padding: 0.55rem 0.7rem; border-radius: 0.45rem; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  font-size: 0.82rem; font-weight: 400; line-height: 1.4; text-align: left; pointer-events: none;
+}
 
 .mobile-pill {
   position: fixed; left: 1rem; right: 1rem; bottom: 1rem;
@@ -233,6 +254,11 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
   </div>
 </header>
 
+<section class="disclaimer" role="note" aria-labelledby="disclaimerTitle">
+  <strong class="disclaimer-title" id="disclaimerTitle"><span aria-hidden="true">⚠ </span><span data-i18n="disclaimer.title"></span></strong>
+  <span data-i18n="disclaimer.text"></span>
+</section>
+
 <p id="testBanner" class="test-banner" hidden></p>
 
 <main class="layout">
@@ -255,7 +281,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             <small class="field-error"></small>
           </div>
           <fieldset class="field">
-            <legend data-i18n="lbl.loadMode"></legend>
+            <legend data-help="help.loadMode" data-i18n="lbl.loadMode"></legend>
             <div class="radio-row">
               <label><input type="radio" name="loadMode" value="current" data-key="loadMode"> <span data-i18n="opt.load.current"></span></label>
               <label><input type="radio" name="loadMode" value="power" data-key="loadMode"> <span data-i18n="opt.load.power"></span></label>
@@ -267,12 +293,12 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             <small class="field-error"></small>
           </div>
           <div class="field load-power">
-            <label for="power" data-i18n="lbl.power"></label>
+            <label for="power" data-help="help.power" data-i18n="lbl.power"></label>
             <input id="power" data-key="power" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field ac-only">
-            <label for="cosphi" data-i18n="lbl.cosphi"></label>
+            <label for="cosphi" data-help="help.cosphi" data-i18n="lbl.cosphi"></label>
             <input id="cosphi" data-key="cosphi" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
@@ -290,12 +316,12 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             <small class="hint" data-i18n="hint.length"></small>
           </div>
           <div class="field ac-only">
-            <label for="reactance" data-i18n="lbl.reactance"></label>
+            <label for="reactance" data-help="help.reactance" data-i18n="lbl.reactance"></label>
             <input id="reactance" data-key="reactance" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field ac-only">
-            <label for="frequency" data-i18n="lbl.frequency"></label>
+            <label for="frequency" data-help="help.frequency" data-i18n="lbl.frequency"></label>
             <input id="frequency" data-key="frequency" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
@@ -306,7 +332,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         <h2 id="h-install" data-i18n="sec.install"></h2>
         <div class="grid">
           <div class="field">
-            <label for="installType" data-i18n="lbl.installType"></label>
+            <label for="installType" data-help="help.installType" data-i18n="lbl.installType"></label>
             <select id="installType" data-key="installType">
               <option value="masonryDirect" data-i18n="opt.install.masonryDirect"></option>
               <option value="conduitMasonry" data-i18n="opt.install.conduitMasonry"></option>
@@ -324,14 +350,14 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             </select>
           </div>
           <div class="field">
-            <label for="cableType" data-i18n="lbl.cableType"></label>
+            <label for="cableType" data-help="help.cableType" data-i18n="lbl.cableType"></label>
             <select id="cableType" data-key="cableType">
               <option value="multi" data-i18n="opt.cableType.multi"></option>
               <option value="single" data-i18n="opt.cableType.single"></option>
             </select>
           </div>
           <div class="field method-manual">
-            <label for="refMethod" data-i18n="lbl.refMethod"></label>
+            <label for="refMethod" data-help="help.refMethod" data-i18n="lbl.refMethod"></label>
             <select id="refMethod" data-key="refMethod">
               <option value="A1" data-i18n="opt.method.A1"></option>
               <option value="A2" data-i18n="opt.method.A2"></option>
@@ -345,23 +371,23 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             </select>
           </div>
           <div class="field">
-            <label for="ambient" data-i18n="lbl.ambient"></label>
+            <label for="ambient" data-help="help.ambient" data-i18n="lbl.ambient"></label>
             <!-- Default keyboard: the iOS decimal pad has no minus sign -->
             <input id="ambient" data-key="ambient" type="text">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="safetyMargin" data-i18n="lbl.safetyMargin"></label>
+            <label for="safetyMargin" data-help="help.safetyMargin" data-i18n="lbl.safetyMargin"></label>
             <input id="safetyMargin" data-key="safetyMargin" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="grouping" data-i18n="lbl.grouping"></label>
+            <label for="grouping" data-help="help.grouping" data-i18n="lbl.grouping"></label>
             <input id="grouping" data-key="grouping" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="kThetaOverride" data-i18n="lbl.kThetaOverride"></label>
+            <label for="kThetaOverride" data-help="help.kTheta" data-i18n="lbl.kThetaOverride"></label>
             <input id="kThetaOverride" data-key="kThetaOverride" type="text" inputmode="decimal" data-i18n-attr="placeholder:ph.auto">
             <small class="field-error"></small>
           </div>
@@ -389,12 +415,12 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             </select>
           </div>
           <div class="field">
-            <label for="thetaMax" data-i18n="lbl.thetaMax"></label>
+            <label for="thetaMax" data-help="help.thetaMax" data-i18n="lbl.thetaMax"></label>
             <input id="thetaMax" data-key="thetaMax" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="rhoMode" data-i18n="lbl.rhoMode"></label>
+            <label for="rhoMode" data-help="help.rhoMode" data-i18n="lbl.rhoMode"></label>
             <select id="rhoMode" data-key="rhoMode">
               <option value="max" data-i18n="opt.rhoMode.max"></option>
               <option value="temp" data-i18n="opt.rhoMode.temp"></option>
@@ -402,18 +428,18 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
             </select>
           </div>
           <div class="field rho-temp">
-            <label for="condTemp" data-i18n="lbl.condTemp"></label>
+            <label for="condTemp" data-help="help.condTemp" data-i18n="lbl.condTemp"></label>
             <!-- Default keyboard: the iOS decimal pad has no minus sign -->
             <input id="condTemp" data-key="condTemp" type="text">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="rho20" data-i18n="lbl.rho20"></label>
+            <label for="rho20" data-help="help.rho20" data-i18n="lbl.rho20"></label>
             <input id="rho20" data-key="rho20" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
           <div class="field">
-            <label for="alpha" data-i18n="lbl.alpha"></label>
+            <label for="alpha" data-help="help.alpha" data-i18n="lbl.alpha"></label>
             <input id="alpha" data-key="alpha" type="text" inputmode="decimal">
             <small class="field-error"></small>
           </div>
@@ -425,7 +451,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         <h2 id="h-criteria" data-i18n="sec.criteria"></h2>
 
         <div class="crit" data-crit="vdOn">
-          <label class="crit-head"><input type="checkbox" data-key="vdOn"> <span data-i18n="crit.vd.title"></span></label>
+          <label class="crit-head" data-help="help.vd"><input type="checkbox" data-key="vdOn"> <span data-i18n="crit.vd.title"></span></label>
           <div class="crit-body grid">
             <div class="field">
               <label for="vdValue" data-i18n="lbl.limit"></label>
@@ -440,7 +466,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         </div>
 
         <div class="crit" data-crit="lossOn">
-          <label class="crit-head"><input type="checkbox" data-key="lossOn"> <span data-i18n="crit.loss.title"></span></label>
+          <label class="crit-head" data-help="help.loss"><input type="checkbox" data-key="lossOn"> <span data-i18n="crit.loss.title"></span></label>
           <div class="crit-body grid">
             <div class="field">
               <label for="lossValue" data-i18n="lbl.limit"></label>
@@ -455,10 +481,10 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         </div>
 
         <div class="crit" data-crit="heatOn">
-          <label class="crit-head"><input type="checkbox" data-key="heatOn"> <span data-i18n="crit.heat.title"></span></label>
+          <label class="crit-head" data-help="help.heat"><input type="checkbox" data-key="heatOn"> <span data-i18n="crit.heat.title"></span></label>
           <div class="crit-body grid">
             <div class="field">
-              <label for="heatH" data-i18n="lbl.heatH"></label>
+              <label for="heatH" data-help="help.heatH" data-i18n="lbl.heatH"></label>
               <input id="heatH" data-key="heatH" type="text" inputmode="decimal">
               <small class="field-error"></small>
             </div>
@@ -468,41 +494,41 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         </div>
 
         <div class="crit" data-crit="izOn">
-          <label class="crit-head"><input type="checkbox" data-key="izOn"> <span data-i18n="crit.iz.title"></span></label>
+          <label class="crit-head" data-help="help.iz"><input type="checkbox" data-key="izOn"> <span data-i18n="crit.iz.title"></span></label>
           <p class="hint" data-i18n="crit.iz.hint"></p>
         </div>
 
         <div class="crit" data-crit="scOn">
-          <label class="crit-head"><input type="checkbox" data-key="scOn"> <span data-i18n="crit.sc.title"></span></label>
+          <label class="crit-head" data-help="help.sc"><input type="checkbox" data-key="scOn"> <span data-i18n="crit.sc.title"></span></label>
           <div class="crit-body grid">
             <div class="field">
-              <label for="isc" data-i18n="lbl.isc"></label>
+              <label for="isc" data-help="help.isc" data-i18n="lbl.isc"></label>
               <input id="isc" data-key="isc" type="text" inputmode="decimal">
               <small class="field-error"></small>
             </div>
             <div class="field">
-              <label for="scTime" data-i18n="lbl.scTime"></label>
+              <label for="scTime" data-help="help.scTime" data-i18n="lbl.scTime"></label>
               <input id="scTime" data-key="scTime" type="text" inputmode="decimal">
               <small class="field-error"></small>
             </div>
             <div class="field">
-              <label for="k" data-i18n="lbl.k"></label>
+              <label for="k" data-help="help.k" data-i18n="lbl.k"></label>
               <input id="k" data-key="k" type="text" inputmode="decimal">
               <small class="field-error"></small>
             </div>
             <div class="field">
               <span aria-hidden="true">&nbsp;</span>
-              <label class="radio-row" style="padding-top:0.5rem"><input type="checkbox" data-key="kAuto" id="kAuto"> <span data-i18n="lbl.kAuto"></span></label>
+              <label class="radio-row" style="padding-top:0.5rem" data-help="help.kAuto"><input type="checkbox" data-key="kAuto" id="kAuto"> <span data-i18n="lbl.kAuto"></span></label>
             </div>
           </div>
           <p class="hint"><span class="formula">S = Isc·√t / k</span> — <output id="kInfo">—</output></p>
         </div>
 
         <div class="crit" data-crit="protOn">
-          <label class="crit-head"><input type="checkbox" data-key="protOn"> <span data-i18n="crit.prot.title"></span></label>
+          <label class="crit-head" data-help="help.prot"><input type="checkbox" data-key="protOn"> <span data-i18n="crit.prot.title"></span></label>
           <div class="crit-body grid">
             <div class="field">
-              <label for="inRating" data-i18n="lbl.inRating"></label>
+              <label for="inRating" data-help="help.inRating" data-i18n="lbl.inRating"></label>
               <input id="inRating" data-key="inRating" type="text" inputmode="decimal">
               <small class="field-error"></small>
             </div>
@@ -549,8 +575,8 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         <table>
           <thead><tr>
             <th scope="col" data-i18n="res.colCriterion"></th>
-            <th scope="col" class="num" data-i18n="res.colRequired"></th>
-            <th scope="col" class="num" data-i18n="res.colStandard"></th>
+            <th scope="col" class="num" data-help="help.colRequired" data-i18n="res.colRequired"></th>
+            <th scope="col" class="num" data-help="help.colStandard" data-i18n="res.colStandard"></th>
             <th scope="col" data-i18n="res.colStatus"></th>
           </tr></thead>
           <tbody id="critBody"></tbody>
@@ -567,6 +593,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
 
 <button type="button" class="mobile-pill" id="mobilePill"><span data-i18n="res.pill"></span><span id="pillValue">—</span></button>
 <div class="toast" id="toast" role="status"></div>
+<div class="help-tip" id="helpTip" role="tooltip" hidden></div>
 
 <footer>
   <span data-i18n="footer.disclaimer"></span>
@@ -657,7 +684,14 @@ function t(key, params) {
 function applyTranslations() {
   document.documentElement.lang = currentLang;
   document.title = t('page.title');
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    // Keep the help icon appended to translated labels
+    const icon = el.querySelector(':scope > .help-icon');
+    el.textContent = t(el.dataset.i18n);
+    if (icon) el.append(icon);
+  });
+  document.querySelectorAll('.help-icon').forEach(btn => btn.setAttribute('aria-label', t('help.iconLabel')));
+  hideHelp();
   document.querySelectorAll('[data-i18n-attr]').forEach(el => {
     el.dataset.i18nAttr.split(';').forEach(pair => {
       const [attr, key] = pair.split(':');
@@ -1415,6 +1449,8 @@ function renderInvalid() {
 function reportToText(r) {
   const lines = [];
   lines.push(t('report.title'));
+  lines.push('⚠ ' + t('report.disclaimer'));
+  lines.push('');
   let load = t('report.system', { sys: t('opt.system.' + r.system), u: fmt(r.U, 2), i: fmt(r.I, 2) });
   if (r.system !== 'dc') load += t('report.ac', { pf: fmt(r.cosphi, 3), x: fmt(r.x * 1000, 3), f: fmt(r.f, 1) });
   lines.push(load + t('report.power', { p: fmt(r.P, 0) }));
@@ -1507,6 +1543,94 @@ function cycleTheme() {
   store.set(STORAGE_THEME, next);
 }
 
+/* ===================== Help tooltips ===================== */
+// Labels with data-help get an "i" button; the shared #helpTip bubble shows on hover,
+// keyboard focus, or click/tap (pinned until clicked again, Escape or click elsewhere).
+
+let helpOwner = null;
+let helpPinned = false;
+
+function addHelpIcons() {
+  document.querySelectorAll('[data-help]').forEach(el => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'help-icon';
+    btn.textContent = 'i';
+    btn.setAttribute('aria-expanded', 'false');
+    el.append(btn);
+  });
+}
+
+function resetHelpIcons() {
+  document.querySelectorAll('.help-icon[aria-expanded="true"]').forEach(btn => {
+    btn.setAttribute('aria-expanded', 'false');
+    btn.removeAttribute('aria-describedby');
+  });
+}
+
+function showHelp(owner) {
+  const tip = $('helpTip');
+  resetHelpIcons();
+  helpOwner = owner;
+  tip.textContent = t(owner.dataset.help);
+  tip.hidden = false;
+  const rect = owner.getBoundingClientRect();
+  const left = Math.min(Math.max(8, rect.left), window.innerWidth - tip.offsetWidth - 8);
+  let top = rect.bottom + 6;
+  if (top + tip.offsetHeight > window.innerHeight - 8) top = Math.max(8, rect.top - tip.offsetHeight - 6);
+  tip.style.left = left + 'px';
+  tip.style.top = top + 'px';
+  const icon = owner.querySelector(':scope > .help-icon');
+  if (icon) {
+    icon.setAttribute('aria-expanded', 'true');
+    icon.setAttribute('aria-describedby', 'helpTip');
+  }
+}
+
+function hideHelp() {
+  resetHelpIcons();
+  helpOwner = null;
+  helpPinned = false;
+  $('helpTip').hidden = true;
+}
+
+function initHelp() {
+  addHelpIcons();
+  document.addEventListener('mouseover', e => {
+    if (helpPinned) return;
+    const owner = e.target.closest('[data-help]');
+    if (owner && owner !== helpOwner) showHelp(owner);
+  });
+  document.addEventListener('mouseout', e => {
+    if (helpPinned || !helpOwner) return;
+    if (!helpOwner.contains(e.relatedTarget)) hideHelp();
+  });
+  document.addEventListener('focusin', e => {
+    if (e.target.classList.contains('help-icon') && !helpPinned) showHelp(e.target.parentElement);
+  });
+  document.addEventListener('focusout', e => {
+    if (e.target.classList.contains('help-icon') && !helpPinned) hideHelp();
+  });
+  document.addEventListener('click', e => {
+    const icon = e.target.closest('.help-icon');
+    if (icon) {
+      e.preventDefault(); // do not toggle the checkbox of a criterion label
+      const owner = icon.parentElement;
+      if (helpPinned && helpOwner === owner) {
+        hideHelp();
+      } else {
+        showHelp(owner);
+        helpPinned = true;
+      }
+      return;
+    }
+    if (helpPinned) hideHelp();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && helpOwner) hideHelp(); });
+  window.addEventListener('scroll', () => { if (helpOwner) hideHelp(); }, true);
+  window.addEventListener('resize', () => { if (helpOwner) hideHelp(); });
+}
+
 /* ===================== Self-tests (?test) ===================== */
 
 function runTests() {
@@ -1582,6 +1706,7 @@ function runTests() {
     check('Translations "' + lang + '": unknown keys', extra.join(', '), '');
   }
   const usedKeys = Array.from(document.querySelectorAll('[data-i18n]')).map(el => el.dataset.i18n)
+    .concat(Array.from(document.querySelectorAll('[data-help]')).map(el => el.dataset.help))
     .concat(Array.from(document.querySelectorAll('[data-i18n-attr]')).flatMap(el => el.dataset.i18nAttr.split(';').map(p => p.split(':')[1].trim())));
   check('HTML keys present in "en"', usedKeys.filter(key => !refKeys.includes(key)).join(', '), '');
 
@@ -1601,6 +1726,7 @@ function init() {
   currentLang = LANGUAGES.includes(savedLang) ? savedLang : DEFAULT_LANG;
   const saved = store.get(STORAGE_SETTINGS);
   applyRaw(Object.assign({}, DEFAULTS, saved && typeof saved === 'object' ? saved : {}));
+  initHelp();
   applyTranslations();
   applyTheme(store.get(STORAGE_THEME));
 

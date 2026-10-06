@@ -11,7 +11,7 @@ Fichiers à déployer ensemble :
 - `iz-data.js` : courants admissibles normalisés (objet `IZ_DEFAULTS`, 72 tables IEC 60364-5-52:2009 annexe B, `version` = date des données). Optionnel : sans lui, les tables Iz sont vides.
 
 Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52.17–B.52.19, non utilisés par l'app),
-`README.md` / `README.fr.md`, `.vercelignore` (seuls les 3 fichiers de l'app sont publiés sur Vercel).
+`README.md` / `README.fr.md`, `docs/MANUAL.en.md` / `docs/MANUEL.fr.md` (manuel utilisateur et technique), `.vercelignore` (seuls les 3 fichiers de l'app sont publiés sur Vercel).
 
 ## 2. Entrées
 | Groupe | Entrée | Défaut | Validation |
@@ -81,6 +81,19 @@ Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52
 - Saisie : champs texte (`inputmode="decimal"`), `parseNumber()` accepte `.` ou `,` dans toutes les langues ; pas de séparateur
   de milliers (`1,500` = 1,5) ; notation `1e-3` acceptée. Les champs de température gardent le clavier standard (signe moins sur iOS).
 - Ajouter une langue : copier le bloc `en` de `i18n.js` sous un nouveau code et ajouter la locale dans `LOCALES` (`index.html`).
+
+## 5ter. Avertissement de non-garantie
+- Bandeau permanent (non masquable) sous l'en-tête : valeurs indicatives non garanties, vérification obligatoire,
+  responsabilité entière de l'utilisateur, aucune responsabilité de l'auteur. Repris dans le pied de page,
+  en tête et en fin du texte copié, et en tête / fin des README et manuels (EN/FR).
+
+## 5bis. Aide contextuelle
+- 31 libellés portent un attribut `data-help="help.<clé>"` (paramètres spécifiques, critères, colonnes Requise/Normalisée).
+- Un bouton « i » est ajouté après chaque libellé ; une bulle unique `#helpTip` (role tooltip) affiche le texte traduit.
+- Affichage : survol du libellé ou du « i » (souris), focus clavier sur le « i », clic/tap sur le « i » (épinglée).
+  Fermeture : sortie de la souris, Échap, clic ailleurs, défilement, redimensionnement. Le clic sur le « i » d'un critère
+  ne coche pas sa case. Positionnée sous le libellé, ou au-dessus si elle déborde de l'écran.
+- Textes : clés `help.*` dans `i18n.js` (EN/FR) ; le test de cohérence des clés couvre aussi `data-help`.
 
 ## 6. Tables de courant admissible
 - Une table par clé `matériau-isolant-méthode-conducteurs chargés` (ex. `cu-pvc-B2-2`), sections 1,5…630 mm².

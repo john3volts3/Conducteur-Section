@@ -24,6 +24,13 @@
 | 2026-10-06 | `README.md`, `README.fr.md` | Création : présentation de l'outil EN / FR avec lien croisé. |
 | 2026-10-06 | `FSD.md`, `JOURNAL.md` | Livraison : fichiers, version des données, déploiement. |
 | 2026-10-06 | `README.md`, `README.fr.md`, `FSD.md` | Lien de l'app en ligne https://conducteur-section.vercel.app/ (déploiement vérifié : 45/45 tests en ligne, documents internes en 404). |
+| 2026-10-06 | `index.html` | Aide contextuelle : bouton « i » et bulle au survol / focus / tap sur 31 libellés (`data-help`), fermeture Échap / clic ailleurs, test de clés étendu à `data-help`. |
+| 2026-10-06 | `i18n.js` | 32 clés `help.*` EN/FR (explications techniques des paramètres, critères et colonnes). |
+| 2026-10-06 | `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Création : manuel utilisateur et technique détaillé (paramètres, formules, résultats, tables Iz, avertissements, 3 exemples chiffrés vérifiés, limites, glossaire). |
+| 2026-10-06 | `README.md`, `README.fr.md` | Section « Paramètres » détaillée + liens vers le manuel. |
+| 2026-10-06 | `FSD.md` | Section aide contextuelle, fichiers du manuel. |
+| 2026-10-06 | `index.html`, `i18n.js` | Avertissement « aucune garantie / responsabilité de l'utilisateur » : bandeau permanent en haut de l'app, pied de page, en tête et en fin du texte copié (EN/FR). |
+| 2026-10-06 | `README.md`, `README.fr.md`, `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Encadré d'avertissement « aucune garantie » en tête et en fin de document. |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).
