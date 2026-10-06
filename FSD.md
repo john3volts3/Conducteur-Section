@@ -115,5 +115,5 @@ calculs, méthodes de référence, données Iz (nombre de tables, croissance, va
 
 ## 10. Déploiement
 - Hébergement statique : `index.html`, `i18n.js`, `iz-data.js`.
-- Vercel : projet importé depuis le dépôt GitHub privé, preset « Other », sans build ; chaque push sur `main` redéploie.
+- Vercel : https://conducteur-section.vercel.app/ — projet importé depuis le dépôt GitHub privé, preset « Other », sans build ; chaque push sur `main` redéploie.
   `.vercelignore` (liste blanche) empêche la publication des documents internes.

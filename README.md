@@ -2,6 +2,8 @@
 
 *[Version française](README.fr.md)*
 
+**Live app: https://conducteur-section.vercel.app/**
+
 Single-page web app that sizes the cross-section of an electrical conductor from several criteria and selects the
 smallest standard section (IEC 60228) that satisfies all of them. Plain HTML/CSS/JavaScript: no dependency, no build,
 works offline by double-clicking `index.html`, and can be hosted as-is on any static host.

@@ -2,6 +2,8 @@
 
 *[English version](README.md)*
 
+**App en ligne : https://conducteur-section.vercel.app/**
+
 Application web d'une seule page qui calcule la section d'un conducteur électrique selon plusieurs critères et retient
 la plus petite section normalisée (IEC 60228) qui les respecte tous. HTML/CSS/JavaScript simple : aucune dépendance,
 aucun build, fonctionne hors ligne en double-cliquant sur `index.html`, et peut être hébergée telle quelle sur

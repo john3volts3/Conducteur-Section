@@ -23,6 +23,7 @@
 | 2026-10-06 | `.vercelignore` | Création : liste blanche, seuls `index.html`, `i18n.js`, `iz-data.js` sont publiés sur Vercel. |
 | 2026-10-06 | `README.md`, `README.fr.md` | Création : présentation de l'outil EN / FR avec lien croisé. |
 | 2026-10-06 | `FSD.md`, `JOURNAL.md` | Livraison : fichiers, version des données, déploiement. |
+| 2026-10-06 | `README.md`, `README.fr.md`, `FSD.md` | Lien de l'app en ligne https://conducteur-section.vercel.app/ (déploiement vérifié : 45/45 tests en ligne, documents internes en 404). |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).
