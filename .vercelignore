@@ -1,0 +1,5 @@
+# Publish only the web app files; internal docs (JOURNAL.md, FSD.md) and unused data stay private
+/*
+!index.html
+!i18n.js
+!iz-data.js

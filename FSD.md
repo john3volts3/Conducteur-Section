@@ -8,7 +8,10 @@ Fonctionne hors ligne en `file://` et sur tout hébergeur statique. Interface bi
 Fichiers à déployer ensemble :
 - `index.html` : page, styles et logique ;
 - `i18n.js` : tous les textes affichés (objet `I18N` par langue). Fichier `.js` et non `.json` car `fetch()` d'un JSON est bloqué en `file://`.
-- `iz-data.js` : courants admissibles normalisés (objet `IZ_DEFAULTS`, 72 tables IEC 60364-5-52:2009 annexe B). Optionnel : sans lui, les tables Iz sont vides.
+- `iz-data.js` : courants admissibles normalisés (objet `IZ_DEFAULTS`, 72 tables IEC 60364-5-52:2009 annexe B, `version` = date des données). Optionnel : sans lui, les tables Iz sont vides.
+
+Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52.17–B.52.19, non utilisés par l'app),
+`README.md` / `README.fr.md`, `.vercelignore` (seuls les 3 fichiers de l'app sont publiés sur Vercel).
 
 ## 2. Entrées
 | Groupe | Entrée | Défaut | Validation |
@@ -83,6 +86,8 @@ Fichiers à déployer ensemble :
 - Une table par clé `matériau-isolant-méthode-conducteurs chargés` (ex. `cu-pvc-B2-2`), sections 1,5…630 mm².
 - Valeurs normalisées (`iz-data.js`) : IEC 60364-5-52:2009 annexe B, tableaux B.52.2–B.52.5 (A1…D2) et B.52.10–B.52.13 (E, F),
   transcrites de deux reproductions indépendantes (Top Cable, TiSoft) recoupées cellule par cellule, ABB en 3e contrôle.
+  Source et version des données (« IEC 60364-5-52:2009 Annex B — data of 2026-10-06 ») affichées dans l'éditeur,
+  l'avertissement « valeurs normalisées » et le rapport copié.
   Cellules vides de la norme omises (Al D2 < 16 mm², F < 25 mm²) ; avertissement si la section retenue est la 1re de la table.
 - Particularité conservée : Al PR/XLPE 25–120 mm², méthode C légèrement inférieure à B1 (identique dans les deux sources).
 - Modifier une valeur crée une table personnalisée (copie des valeurs normalisées) ; « Restore standard values » la supprime ;
@@ -100,10 +105,15 @@ calculs, méthodes de référence, données Iz (nombre de tables, croissance, va
 ## 9. Limites
 - Outil indicatif, ne remplace pas la norme (RGIE, NF C 15-100, IEC 60364) ni un professionnel qualifié.
 - Valeurs Iz transcrites de reproductions de la norme : à vérifier avec l'édition applicable (RGIE, NF C 15-100).
-- Facteur de groupement saisi à la main (pas de tableaux B.52.17+ par méthode) ; facteur « contact avec isolant thermique »
+- Facteur de groupement saisi à la main (tableaux B.52.17–B.52.19 disponibles dans `grouping-data.js`, non utilisés) ; facteur « contact avec isolant thermique »
   (jusqu'à 0,5, 523.9) seulement signalé ; résistivité thermique du sol fixe 2,5 K·m/W pour D1/D2.
 - Pose « meuble en bois » absente de la norme : méthode A1/A2 par hypothèse prudente.
 - Modèle thermique : conducteur nu seul à l'air libre ; ignore isolant, mode de pose, câbles voisins, rayonnement séparé.
 - Résistance AC = résistance DC (effet de peau/proximité seulement signalés).
 - Pas de vérification de la boucle de défaut (protection des personnes) ni de la longueur max en court-circuit minimal.
 - Sections > 630 mm² : signalées, conducteurs en parallèle non calculés.
+
+## 10. Déploiement
+- Hébergement statique : `index.html`, `i18n.js`, `iz-data.js`.
+- Vercel : projet importé depuis le dépôt GitHub privé, preset « Other », sans build ; chaque push sur `main` redéploie.
+  `.vercelignore` (liste blanche) empêche la publication des documents internes.

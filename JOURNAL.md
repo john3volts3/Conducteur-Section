@@ -18,6 +18,11 @@
 | 2026-10-06 | `iz-data.js` | Création : 72 tables Iz IEC 60364-5-52:2009 annexe B (1080 valeurs, recoupées sur 2 sources). |
 | 2026-10-06 | `i18n.js` | Clés EN/FR : types de pose, types de câble, méthodes, sources Iz, nouveaux avertissements, rapport. |
 | 2026-10-06 | `FSD.md` | Méthodes de référence, tables Iz normalisées, persistance v2, 45 tests, limites. |
+| 2026-10-06 | `iz-data.js`, `index.html`, `i18n.js` | Version des données Iz (`version: '2026-10-06'`) affichée dans l'éditeur, l'avertissement et le rapport copié (ligne « Ampacity data »). |
+| 2026-10-06 | `grouping-data.js` | Création : facteurs de groupement IEC B.52.17 / B.52.18 / B.52.19 (recoupés sur 2 sources), conservés pour une évolution future, non chargés par l'app. |
+| 2026-10-06 | `.vercelignore` | Création : liste blanche, seuls `index.html`, `i18n.js`, `iz-data.js` sont publiés sur Vercel. |
+| 2026-10-06 | `README.md`, `README.fr.md` | Création : présentation de l'outil EN / FR avec lien croisé. |
+| 2026-10-06 | `FSD.md`, `JOURNAL.md` | Livraison : fichiers, version des données, déploiement. |
 
 Décisions validées par l'utilisateur :
 - ρ20 modifiable (le test DC utilise ρ = 0,0225 directement dans la fonction pure).
@@ -30,3 +35,6 @@ Décisions validées par l'utilisateur :
 - Température : ambiante max seule + marge de sécurité en K (θcalc = θamb,max + marge), ρ calculée à θmax de l'isolant par défaut.
 - Type de pose → méthode de référence IEC (tableau B.52.3) ; « meuble en bois » ajouté et traité en A1/A2 (prudent).
 - Tables Iz préremplies avec les valeurs IEC 60364-5-52 annexe B (demande utilisateur), modifiables par table.
+- Facteurs de groupement normalisés abandonnés dans l'UI (saisie manuelle conservée) ; tables vérifiées gardées dans `grouping-data.js`.
+- Pas de bouton de mise à jour des valeurs Iz : version des données affichée à la place.
+- Déploiement Vercel depuis GitHub (dépôt privé), `.vercelignore` en liste blanche.

@@ -7,6 +7,8 @@
 // Empty cells in the standard (e.g. Al D2 below 16 mm², method F below 25 mm²) are omitted.
 const IZ_DEFAULTS = {
   source: 'IEC 60364-5-52:2009 Annex B',
+  // Date the values were transcribed and cross-checked
+  version: '2026-10-06',
   tables: {
     'al-pvc-A1-2': { '2.5': 15, '4': 20, '6': 26, '10': 36, '16': 48, '25': 63, '35': 77, '50': 93, '70': 118, '95': 142, '120': 164, '150': 189, '185': 215, '240': 252, '300': 289 },
     'al-pvc-A2-2': { '2.5': 14.5, '4': 19.5, '6': 25, '10': 33, '16': 44, '25': 58, '35': 71, '50': 86, '70': 108, '95': 130, '120': 150, '150': 172, '185': 195, '240': 229, '300': 263 },

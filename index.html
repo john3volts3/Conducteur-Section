@@ -854,6 +854,12 @@ function sanitizeIzTables(data) {
   return out;
 }
 
+// Source and version of the standard Iz values, e.g. "IEC 60364-5-52:2009 Annex B — data of 2026-10-06"
+function izDataLabel() {
+  if (typeof IZ_DEFAULTS === 'undefined') return '';
+  return t('iz.dataLabel', { src: IZ_DEFAULTS.source || '', version: IZ_DEFAULTS.version || '—' });
+}
+
 function isCustomIz(key) {
   return Object.prototype.hasOwnProperty.call(izTables, key);
 }
@@ -1022,7 +1028,7 @@ function renderIzEditor() {
   const table = effectiveIzTable(key);
   $('izCombo').textContent = izKeyName(key);
   if (isCustomIz(key)) $('izSource').textContent = t('iz.sourceCustom');
-  else if (IZ_STANDARD[key]) $('izSource').textContent = t('iz.sourceStandard', { src: IZ_DEFAULTS.source || '' });
+  else if (IZ_STANDARD[key]) $('izSource').textContent = t('iz.sourceStandard', { src: izDataLabel() });
   else $('izSource').textContent = t('iz.sourceNone');
   $('izRestore').disabled = !isCustomIz(key) || !IZ_STANDARD[key];
   $('izBody').innerHTML = STD_SECTIONS.map(s =>
@@ -1298,6 +1304,7 @@ function compute() {
   const report = {
     system, U, I, P, cosphi, L, x, f, rho, rho20, alpha, thetaMax, ambient, margin, designAmbient, kTheta, factor,
     installType: s.installType, cableType: s.cableType, method, loaded,
+    izSource: s.izOn && hasIz ? (isCustomIz(izTableKey) ? t('iz.sourceCustom') : izDataLabel()) : '',
     loadMode: s.loadMode, combo, rows, final, warnings, summary: []
   };
 
@@ -1349,7 +1356,7 @@ function compute() {
   }
   if (s.heatOn) warnings.push({ cls: 'note', text: t('warn.heatNote') });
   if (s.heatOn && !FREE_AIR_METHODS.includes(method)) warnings.push({ cls: '', text: t('warn.heatEnclosed', { m: method }) });
-  if (s.izOn && hasIz && !isCustomIz(izTableKey)) warnings.push({ cls: 'note', text: t('warn.izStandard', { src: IZ_DEFAULTS.source || '' }) });
+  if (s.izOn && hasIz && !isCustomIz(izTableKey)) warnings.push({ cls: 'note', text: t('warn.izStandard', { src: izDataLabel() }) });
 
   lastReport = report;
   render(report);
@@ -1417,6 +1424,7 @@ function reportToText(r) {
   lines.push(t('report.method', {
     inst: t('opt.install.' + r.installType), cable: t('opt.cableType.' + r.cableType), m: r.method, n: r.loaded
   }));
+  if (r.izSource) lines.push(t('report.izData', { src: r.izSource }));
   lines.push(t('report.install', { t: fmt(r.ambient, 1), m: fmt(r.margin, 1), d: fmt(r.designAmbient, 1), k: fmt(r.kTheta, 3), f: fmt(r.factor, 3) }));
   lines.push('');
   lines.push(t('report.header'));
