@@ -302,6 +302,75 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         </div>
       </section>
 
+      <section class="card" aria-labelledby="h-install">
+        <h2 id="h-install" data-i18n="sec.install"></h2>
+        <div class="grid">
+          <div class="field">
+            <label for="installType" data-i18n="lbl.installType"></label>
+            <select id="installType" data-key="installType">
+              <option value="masonryDirect" data-i18n="opt.install.masonryDirect"></option>
+              <option value="conduitMasonry" data-i18n="opt.install.conduitMasonry"></option>
+              <option value="trunkingWall" data-i18n="opt.install.trunkingWall"></option>
+              <option value="hollowWall" data-i18n="opt.install.hollowWall"></option>
+              <option value="insulatedWall" data-i18n="opt.install.insulatedWall"></option>
+              <option value="woodMoulding" data-i18n="opt.install.woodMoulding"></option>
+              <option value="woodFurniture" data-i18n="opt.install.woodFurniture"></option>
+              <option value="surfaceWall" data-i18n="opt.install.surfaceWall"></option>
+              <option value="floorScreed" data-i18n="opt.install.floorScreed"></option>
+              <option value="buriedDuct" data-i18n="opt.install.buriedDuct"></option>
+              <option value="buriedDirect" data-i18n="opt.install.buriedDirect"></option>
+              <option value="cableTray" data-i18n="opt.install.cableTray"></option>
+              <option value="manual" data-i18n="opt.install.manual"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cableType" data-i18n="lbl.cableType"></label>
+            <select id="cableType" data-key="cableType">
+              <option value="multi" data-i18n="opt.cableType.multi"></option>
+              <option value="single" data-i18n="opt.cableType.single"></option>
+            </select>
+          </div>
+          <div class="field method-manual">
+            <label for="refMethod" data-i18n="lbl.refMethod"></label>
+            <select id="refMethod" data-key="refMethod">
+              <option value="A1" data-i18n="opt.method.A1"></option>
+              <option value="A2" data-i18n="opt.method.A2"></option>
+              <option value="B1" data-i18n="opt.method.B1"></option>
+              <option value="B2" data-i18n="opt.method.B2"></option>
+              <option value="C" data-i18n="opt.method.C"></option>
+              <option value="D1" data-i18n="opt.method.D1"></option>
+              <option value="D2" data-i18n="opt.method.D2"></option>
+              <option value="E" data-i18n="opt.method.E"></option>
+              <option value="F" data-i18n="opt.method.F"></option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ambient" data-i18n="lbl.ambient"></label>
+            <!-- Default keyboard: the iOS decimal pad has no minus sign -->
+            <input id="ambient" data-key="ambient" type="text">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="safetyMargin" data-i18n="lbl.safetyMargin"></label>
+            <input id="safetyMargin" data-key="safetyMargin" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="grouping" data-i18n="lbl.grouping"></label>
+            <input id="grouping" data-key="grouping" type="text" inputmode="decimal">
+            <small class="field-error"></small>
+          </div>
+          <div class="field">
+            <label for="kThetaOverride" data-i18n="lbl.kThetaOverride"></label>
+            <input id="kThetaOverride" data-key="kThetaOverride" type="text" inputmode="decimal" data-i18n-attr="placeholder:ph.auto">
+            <small class="field-error"></small>
+          </div>
+        </div>
+        <p class="info"><output id="methodInfo">—</output></p>
+        <p class="info"><span data-i18n="info.designAmbient"></span> <output id="designAmbientInfo">—</output></p>
+        <p class="info"><span data-i18n="info.kThetaAuto"></span> <output id="kThetaInfo">—</output> <span class="formula" id="kThetaFormula"></span> · <span data-i18n="info.totalFactor"></span> <output id="factorInfo">—</output></p>
+      </section>
+
       <section class="card" aria-labelledby="h-conductor">
         <h2 id="h-conductor" data-i18n="sec.conductor"></h2>
         <div class="grid">
@@ -327,6 +396,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
           <div class="field">
             <label for="rhoMode" data-i18n="lbl.rhoMode"></label>
             <select id="rhoMode" data-key="rhoMode">
+              <option value="max" data-i18n="opt.rhoMode.max"></option>
               <option value="temp" data-i18n="opt.rhoMode.temp"></option>
               <option value="iec" data-i18n="opt.rhoMode.iec"></option>
             </select>
@@ -349,29 +419,6 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
           </div>
         </div>
         <p class="info"><span data-i18n="info.rhoUsed"></span> <output id="rhoInfo">—</output> <span class="formula">ρ(T) = ρ20·(1 + α·(T − 20))</span></p>
-      </section>
-
-      <section class="card" aria-labelledby="h-install">
-        <h2 id="h-install" data-i18n="sec.install"></h2>
-        <div class="grid">
-          <div class="field">
-            <label for="ambient" data-i18n="lbl.ambient"></label>
-            <!-- Default keyboard: the iOS decimal pad has no minus sign -->
-            <input id="ambient" data-key="ambient" type="text">
-            <small class="field-error"></small>
-          </div>
-          <div class="field">
-            <label for="grouping" data-i18n="lbl.grouping"></label>
-            <input id="grouping" data-key="grouping" type="text" inputmode="decimal">
-            <small class="field-error"></small>
-          </div>
-          <div class="field">
-            <label for="kThetaOverride" data-i18n="lbl.kThetaOverride"></label>
-            <input id="kThetaOverride" data-key="kThetaOverride" type="text" inputmode="decimal" data-i18n-attr="placeholder:ph.auto">
-            <small class="field-error"></small>
-          </div>
-        </div>
-        <p class="info"><span data-i18n="info.kThetaAuto"></span> <output id="kThetaInfo">—</output> <span class="formula">kθ = √((θmax − θamb) / (θmax − 30))</span> · <span data-i18n="info.totalFactor"></span> <output id="factorInfo">—</output></p>
       </section>
 
       <section class="card" aria-labelledby="h-criteria">
@@ -416,7 +463,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
               <small class="field-error"></small>
             </div>
           </div>
-          <p class="hint"><span class="formula">S = (I²·ρ(θmax) / (2·√π·h·ΔT·10⁻³))^(2/3), ΔT = θmax − θamb.</span>
+          <p class="hint"><span class="formula">S = (I²·ρ(θmax) / (2·√π·h·ΔT·10⁻³))^(2/3), ΔT = θmax − θcalc.</span>
             <span data-i18n="crit.heat.hint"></span></p>
         </div>
 
@@ -468,10 +515,12 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
     <details class="card" id="izEditor">
       <summary><span data-i18n="iz.summary"></span> <span id="izCombo"></span></summary>
       <p class="hint" data-i18n="iz.hint"></p>
+      <p class="hint"><strong id="izSource"></strong></p>
       <div class="iz-tools">
         <button type="button" class="btn btn-small" id="izExport" data-i18n="iz.export"></button>
         <button type="button" class="btn btn-small" id="izImportBtn" data-i18n="iz.import"></button>
         <input type="file" id="izImport" accept="application/json,.json" hidden>
+        <button type="button" class="btn btn-small" id="izRestore" data-i18n="iz.restore"></button>
         <button type="button" class="btn btn-small" id="izClear" data-i18n="iz.clear"></button>
         <span class="iz-status" id="izStatus" role="status"></span>
       </div>
@@ -525,6 +574,7 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
 </footer>
 
 <script src="i18n.js"></script>
+<script src="iz-data.js"></script>
 <script>
 'use strict';
 
@@ -544,22 +594,46 @@ const K_TABLE_LARGE = { 'cu-pvc': 103, 'cu-xlpe': 143, 'al-pvc': 68, 'al-xlpe': 
 const STD_SECTIONS = [0.5, 0.75, 1, 1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300, 400, 500, 630];
 const MU0 = 4e-7 * Math.PI;
 const THETA_REF = 30;
+const THETA_REF_GROUND = 20;
+
+// Installation types → IEC 60364-5-52 reference method (Table B.52.3), per cable type
+const INSTALLATIONS = {
+  masonryDirect: { single: 'C', multi: 'C', sheathedOnly: true },
+  conduitMasonry: { single: 'B1', multi: 'B2' },
+  trunkingWall: { single: 'B1', multi: 'B2' },
+  hollowWall: { single: 'B1', multi: 'B2' },
+  insulatedWall: { single: 'A1', multi: 'A2', insulationWarning: true },
+  woodMoulding: { single: 'A1', multi: 'A2' },
+  // Not listed in IEC Table B.52.3: treated as a wooden enclosure (conservative)
+  woodFurniture: { single: 'A1', multi: 'A2', assumption: true },
+  surfaceWall: { single: 'C', multi: 'C', sheathedOnly: true },
+  floorScreed: { single: 'B1', multi: 'B2' },
+  buriedDuct: { single: 'D1', multi: 'D1', sheathedOnly: true },
+  buriedDirect: { single: 'D2', multi: 'D2', sheathedOnly: true },
+  cableTray: { single: 'F', multi: 'E', sheathedOnly: true },
+  manual: null
+};
+const REF_METHODS = ['A1', 'A2', 'B1', 'B2', 'C', 'D1', 'D2', 'E', 'F'];
+const GROUND_METHODS = ['D1', 'D2'];
+const FREE_AIR_METHODS = ['E', 'F'];
+const IZ_KEY_PATTERN = /^(cu|al)-(pvc|xlpe)-(A1|A2|B1|B2|C|D1|D2|E|F)-(2|3)$/;
 
 const STORAGE_SETTINGS = 'cableSizer.settings.v1';
-const STORAGE_IZ = 'cableSizer.izTables.v1';
+const STORAGE_IZ = 'cableSizer.izTables.v2';
 const STORAGE_THEME = 'cableSizer.theme';
 const STORAGE_LANG = 'cableSizer.lang';
 
 const DEFAULTS = {
   system: 'ac1', voltage: '230', loadMode: 'current', current: '16', power: '3000', cosphi: '0.9',
   length: '20', reactance: '0.08', frequency: '50',
-  material: 'cu', insulation: 'pvc', thetaMax: '70', rhoMode: 'temp', condTemp: '70',
+  material: 'cu', insulation: 'pvc', thetaMax: '70', rhoMode: 'max', condTemp: '70',
   rho20: '0.017241', alpha: '0.00393',
-  ambient: '30', grouping: '1', kThetaOverride: '',
+  installType: 'surfaceWall', cableType: 'multi', refMethod: 'C',
+  ambient: '30', safetyMargin: '0', grouping: '1', kThetaOverride: '',
   vdOn: true, vdValue: '3', vdUnit: '%',
   lossOn: true, lossValue: '2', lossUnit: '%',
-  heatOn: true, heatH: '10',
-  izOn: false,
+  heatOn: false, heatH: '10',
+  izOn: true,
   scOn: false, isc: '3000', scTime: '0.1', k: '115', kAuto: true,
   protOn: false, inRating: '16'
 };
@@ -683,6 +757,24 @@ function temperatureCorrectionFactor(thetaMax, thetaAmb, thetaRef = THETA_REF) {
   return Math.sqrt((thetaMax - thetaAmb) / (thetaMax - thetaRef));
 }
 
+function referenceMethod(installType, cableType, manualMethod) {
+  const install = INSTALLATIONS[installType];
+  if (!install) return REF_METHODS.includes(manualMethod) ? manualMethod : 'C';
+  return cableType === 'single' ? install.single : install.multi;
+}
+
+function loadedConductors(system) {
+  return system === 'ac3' ? 3 : 2;
+}
+
+function referenceTemperature(method) {
+  return GROUND_METHODS.includes(method) ? THETA_REF_GROUND : THETA_REF;
+}
+
+function izKey(material, insulation, method, loaded) {
+  return material + '-' + insulation + '-' + method + '-' + loaded;
+}
+
 function sectionForAmpacity(izTable, current, factor) {
   for (const s of STD_SECTIONS) {
     const iz = izTable[s];
@@ -743,21 +835,31 @@ const store = {
   }
 };
 
+// Standard values shipped in iz-data.js; user tables (edited or imported) override them per key
+const IZ_STANDARD = typeof IZ_DEFAULTS !== 'undefined' && IZ_DEFAULTS.tables ? (sanitizeIzTables(IZ_DEFAULTS.tables) || {}) : {};
 let izTables = sanitizeIzTables(store.get(STORAGE_IZ)) || {};
 
 function sanitizeIzTables(data) {
   if (!data || typeof data !== 'object') return null;
   const out = {};
-  for (const combo of Object.keys(K_TABLE)) {
-    const src = data[combo];
-    if (!src || typeof src !== 'object') continue;
-    out[combo] = {};
+  for (const key of Object.keys(data)) {
+    const src = data[key];
+    if (!IZ_KEY_PATTERN.test(key) || !src || typeof src !== 'object') continue;
+    out[key] = {};
     for (const s of STD_SECTIONS) {
       const v = Number(src[s]);
-      if (Number.isFinite(v) && v > 0) out[combo][s] = v;
+      if (Number.isFinite(v) && v > 0) out[key][s] = v;
     }
   }
   return out;
+}
+
+function isCustomIz(key) {
+  return Object.prototype.hasOwnProperty.call(izTables, key);
+}
+
+function effectiveIzTable(key) {
+  return isCustomIz(key) ? izTables[key] : (IZ_STANDARD[key] || {});
 }
 
 /* ===================== DOM helpers ===================== */
@@ -816,11 +918,6 @@ function insulationName(insulation) {
   return t('opt.insulation.' + insulation);
 }
 
-function comboName(combo) {
-  const [mat, ins] = combo.split('-');
-  return t('iz.combo', { mat: materialName(mat), ins: insulationName(ins) });
-}
-
 function clearErrors() {
   errorCount = 0;
   form.querySelectorAll('[aria-invalid="true"]').forEach(el => el.removeAttribute('aria-invalid'));
@@ -852,6 +949,19 @@ function comboKey() {
   return $('material').value + '-' + $('insulation').value;
 }
 
+function currentMethod() {
+  return referenceMethod($('installType').value, $('cableType').value, $('refMethod').value);
+}
+
+function currentIzKey() {
+  return izKey($('material').value, $('insulation').value, currentMethod(), loadedConductors($('system').value));
+}
+
+function izKeyName(key) {
+  const [mat, ins, method, loaded] = key.split('-');
+  return t('iz.keyName', { mat: materialName(mat), ins: insulationName(ins), m: method, n: loaded });
+}
+
 function updateVisibility() {
   const ac = $('system').value !== 'dc';
   document.querySelectorAll('.ac-only').forEach(el => { el.hidden = !ac; });
@@ -860,6 +970,7 @@ function updateVisibility() {
   document.querySelectorAll('.load-current').forEach(el => { el.hidden = powerMode; });
   document.querySelectorAll('.load-power').forEach(el => { el.hidden = !powerMode; });
   document.querySelectorAll('.rho-temp').forEach(el => { el.hidden = $('rhoMode').value !== 'temp'; });
+  document.querySelectorAll('.method-manual').forEach(el => { el.hidden = $('installType').value !== 'manual'; });
   document.querySelectorAll('.crit[data-crit]').forEach(el => {
     const box = el.querySelector('input[data-key="' + el.dataset.crit + '"]');
     el.classList.toggle('off', !box.checked);
@@ -893,6 +1004,7 @@ function onFormInput(e) {
     $('thetaMax').value = numberToInput(INSULATIONS[$('insulation').value].thetaMax);
     renderIzEditor();
   }
+  if (['system', 'installType', 'cableType', 'refMethod'].includes(key)) renderIzEditor();
   updateVisibility();
   updateKField();
   saveSettings();
@@ -906,9 +1018,13 @@ function sectionId(s) {
 }
 
 function renderIzEditor() {
-  const combo = comboKey();
-  const table = izTables[combo] || {};
-  $('izCombo').textContent = comboName(combo);
+  const key = currentIzKey();
+  const table = effectiveIzTable(key);
+  $('izCombo').textContent = izKeyName(key);
+  if (isCustomIz(key)) $('izSource').textContent = t('iz.sourceCustom');
+  else if (IZ_STANDARD[key]) $('izSource').textContent = t('iz.sourceStandard', { src: IZ_DEFAULTS.source || '' });
+  else $('izSource').textContent = t('iz.sourceNone');
+  $('izRestore').disabled = !isCustomIz(key) || !IZ_STANDARD[key];
   $('izBody').innerHTML = STD_SECTIONS.map(s =>
     '<tr><th scope="row"><label for="' + sectionId(s) + '">' + escapeHtml(t('iz.rowLabel', { s: fmt(s, 2) })) + '</label></th>' +
     '<td><input type="text" inputmode="decimal" id="' + sectionId(s) + '" data-section="' + s + '" value="' + (table[s] != null ? escapeHtml(numberToInput(table[s])) : '') + '"></td>' +
@@ -917,7 +1033,7 @@ function renderIzEditor() {
 }
 
 function updateIzCorrected(factor) {
-  const table = izTables[comboKey()] || {};
+  const table = effectiveIzTable(currentIzKey());
   $('izBody').querySelectorAll('td[data-corr]').forEach(td => {
     const iz = table[td.dataset.corr];
     td.textContent = iz > 0 && Number.isFinite(factor) ? fmt(iz * factor, 1) : '—';
@@ -927,8 +1043,13 @@ function updateIzCorrected(factor) {
 function onIzInput(e) {
   const el = e.target;
   if (!el.dataset.section) return;
-  const combo = comboKey();
-  const table = izTables[combo] || (izTables[combo] = {});
+  const key = currentIzKey();
+  // First edit of a standard table: start the user table from the standard values
+  if (!isCustomIz(key)) {
+    izTables[key] = Object.assign({}, IZ_STANDARD[key] || {});
+    renderIzSource(key);
+  }
+  const table = izTables[key];
   const empty = el.value.trim() === '';
   const v = parseNumber(el.value);
   if (empty || !(v > 0)) delete table[el.dataset.section];
@@ -939,8 +1060,23 @@ function onIzInput(e) {
   compute();
 }
 
+function renderIzSource(key) {
+  $('izSource').textContent = t('iz.sourceCustom');
+  $('izRestore').disabled = !IZ_STANDARD[key];
+}
+
+function restoreIz() {
+  delete izTables[currentIzKey()];
+  store.set(STORAGE_IZ, izTables);
+  renderIzEditor();
+  compute();
+  $('izStatus').textContent = t('iz.restored');
+}
+
+// Exports every effective table (standard values merged with user tables)
 function exportIz() {
-  const blob = new Blob([JSON.stringify(izTables, null, 2)], { type: 'application/json' });
+  const all = Object.assign({}, IZ_STANDARD, izTables);
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'cable-sizer-iz-tables.json';
@@ -964,7 +1100,7 @@ function importIz(e) {
       store.set(STORAGE_IZ, izTables);
       renderIzEditor();
       compute();
-      $('izStatus').textContent = t('iz.imported', { list: Object.keys(data).map(comboName).join(', ') });
+      $('izStatus').textContent = t('iz.imported', { n: Object.keys(data).length });
     }
     e.target.value = '';
   };
@@ -982,7 +1118,7 @@ function clearIz() {
   clearTimeout(clearArmed);
   clearArmed = null;
   btn.textContent = t('iz.clear');
-  delete izTables[comboKey()];
+  izTables[currentIzKey()] = {};
   store.set(STORAGE_IZ, izTables);
   renderIzEditor();
   compute();
@@ -1036,15 +1172,28 @@ function compute() {
   const rho20 = positive('rho20');
   const alpha = readNumber('alpha', { min: 0 });
   const thetaMax = readNumber('thetaMax', { min: 0, minExclusive: true, max: 400 });
-  const rho = s.rhoMode === 'iec'
-    ? rhoIecConvention(rho20)
-    : rhoAtTemperature(rho20, alpha, readNumber('condTemp', { min: -60, max: 400 }));
+  let rho;
+  if (s.rhoMode === 'iec') rho = rhoIecConvention(rho20);
+  else if (s.rhoMode === 'temp') rho = rhoAtTemperature(rho20, alpha, readNumber('condTemp', { min: -60, max: 400 }));
+  else rho = rhoAtTemperature(rho20, alpha, thetaMax);
   const ambient = readNumber('ambient', { min: -60, max: 200 });
-  if (Number.isFinite(ambient) && Number.isFinite(thetaMax) && ambient >= thetaMax) {
-    fieldError('ambient', t('err.belowThetaMax'));
+  const margin = readNumber('safetyMargin', { min: 0, max: 100 });
+  // Design ambient = max ambient + safety margin, used by every thermal calculation
+  const designAmbient = ambient + margin;
+  if (Number.isFinite(designAmbient) && Number.isFinite(thetaMax) && designAmbient >= thetaMax) {
+    fieldError(margin > 0 ? 'safetyMargin' : 'ambient', t('err.belowThetaMax'));
   }
+  $('designAmbientInfo').textContent = Number.isFinite(designAmbient)
+    ? t('info.designAmbientValue', { a: fmt(ambient, 1), m: fmt(margin, 1), d: fmt(designAmbient, 1) })
+    : '—';
   const grouping = readNumber('grouping', { min: 0, minExclusive: true, max: 1 });
-  const kThetaAuto = temperatureCorrectionFactor(thetaMax, ambient);
+  const method = currentMethod();
+  const loaded = loadedConductors(system);
+  const thetaRef = referenceTemperature(method);
+  const izTableKey = currentIzKey();
+  $('methodInfo').textContent = t(GROUND_METHODS.includes(method) ? 'info.refMethodGround' : 'info.refMethod', { m: method, n: loaded, ref: thetaRef });
+  $('kThetaFormula').textContent = 'kθ = √((θmax − θcalc) / (θmax − ' + thetaRef + '))';
+  const kThetaAuto = temperatureCorrectionFactor(thetaMax, designAmbient, thetaRef);
   const kTheta = String(s.kThetaOverride).trim() === '' ? kThetaAuto : positive('kThetaOverride');
 
   let dUmax, pMax, h, isc, tsc, k, inRating;
@@ -1070,10 +1219,14 @@ function compute() {
     return;
   }
 
-  const izTable = izTables[combo] || {};
+  const izTable = effectiveIzTable(izTableKey);
   const hasIz = Object.keys(izTable).length > 0;
   const rows = [];
   const warnings = [];
+  const install = INSTALLATIONS[s.installType];
+  if (install && install.insulationWarning) warnings.push({ cls: '', text: t('warn.insulatedWall') });
+  if (install && install.assumption) warnings.push({ cls: 'note', text: t('warn.methodAssumption', { m: method }) });
+  if (install && install.sheathedOnly && s.cableType === 'single') warnings.push({ cls: '', text: t('warn.sheathedOnly') });
 
   if (s.vdOn) {
     const r = sectionForVoltageDrop({ system, rho, length: L, current: I, dUmax, cosphi, x });
@@ -1088,7 +1241,7 @@ function compute() {
     rows.push(makeRow('loss', sectionForPowerLoss({ system, rho, length: L, current: I, pMax }), t('note.loss', { v: fmt(pMax, 1) })));
   }
   if (s.heatOn) {
-    const deltaT = thetaMax - ambient;
+    const deltaT = thetaMax - designAmbient;
     const rhoHot = rhoAtTemperature(rho20, alpha, thetaMax);
     rows.push(makeRow('heat', sectionForHeating({ current: I, rho: rhoHot, h, deltaT }), t('note.heat', { dt: fmt(deltaT, 1), h: fmt(h, 1) })));
   }
@@ -1097,6 +1250,10 @@ function compute() {
       rows.push({ id: 'iz', required: NaN, std: null, status: 'nodata', note: t('note.fillIz') });
     } else {
       const std = sectionForAmpacity(izTable, I, factor);
+      const firstSection = STD_SECTIONS.find(sec => izTable[sec] > 0);
+      if (std != null && std === firstSection && firstSection > 1.5) {
+        warnings.push({ cls: 'note', text: t('warn.tableStart', { s: fmtSection(firstSection), m: method }) });
+      }
       rows.push(std == null
         ? { id: 'iz', required: NaN, std: null, status: 'error', note: t('note.izNone', { i: fmt(I, 1) }) }
         : { id: 'iz', required: std, std, status: 'ok', note: t('note.izOk', { iz: fmt(izTable[std] * factor, 1), i: fmt(I, 1) }) });
@@ -1134,12 +1291,13 @@ function compute() {
   if (final) final.governing = true;
 
   for (const r of rows) {
-    if (r.status === 'nodata') warnings.push({ cls: '', text: t('warn.noData', { name: criterionName(r.id), combo: comboName(combo) }) });
+    if (r.status === 'nodata') warnings.push({ cls: '', text: t('warn.noData', { name: criterionName(r.id), combo: izKeyName(izTableKey) }) });
     else if (r.status === 'error' && r.id !== 'vd') warnings.push({ cls: 'err', text: t('warn.rowError', { name: criterionName(r.id), note: r.note }) });
   }
 
   const report = {
-    system, U, I, P, cosphi, L, x, f, rho, rho20, alpha, thetaMax, ambient, kTheta, factor,
+    system, U, I, P, cosphi, L, x, f, rho, rho20, alpha, thetaMax, ambient, margin, designAmbient, kTheta, factor,
+    installType: s.installType, cableType: s.cableType, method, loaded,
     loadMode: s.loadMode, combo, rows, final, warnings, summary: []
   };
 
@@ -1152,10 +1310,10 @@ function compute() {
 
     let temp, tempSource;
     if (hasIz && izTable[S] > 0) {
-      temp = temperatureFromAmpacity(ambient, thetaMax, I, izTable[S] * factor);
+      temp = temperatureFromAmpacity(designAmbient, thetaMax, I, izTable[S] * factor);
       tempSource = t('sum.fromIz');
     } else {
-      temp = temperatureFromHeatBalance({ current: I, section: S, h, thetaAmb: ambient, rho20, alpha });
+      temp = temperatureFromHeatBalance({ current: I, section: S, h, thetaAmb: designAmbient, rho20, alpha });
       tempSource = t('sum.fromModel', { h: fmt(h, 1) });
     }
     report.summary.push([t('sum.temperature'), Number.isFinite(temp)
@@ -1190,6 +1348,8 @@ function compute() {
     report.summary.push([t('sum.rho'), t('sum.rhoValue', { v: fmt(rho, 5) })]);
   }
   if (s.heatOn) warnings.push({ cls: 'note', text: t('warn.heatNote') });
+  if (s.heatOn && !FREE_AIR_METHODS.includes(method)) warnings.push({ cls: '', text: t('warn.heatEnclosed', { m: method }) });
+  if (s.izOn && hasIz && !isCustomIz(izTableKey)) warnings.push({ cls: 'note', text: t('warn.izStandard', { src: IZ_DEFAULTS.source || '' }) });
 
   lastReport = report;
   render(report);
@@ -1254,7 +1414,10 @@ function reportToText(r) {
   lines.push(t('report.line', { l: fmt(r.L, 2) }));
   const [mat, ins] = r.combo.split('-');
   lines.push(t('report.conductor', { mat: materialName(mat), ins: insulationName(ins), rho: fmt(r.rho, 5), t: fmt(r.thetaMax, 0) }));
-  lines.push(t('report.install', { t: fmt(r.ambient, 1), k: fmt(r.kTheta, 3), f: fmt(r.factor, 3) }));
+  lines.push(t('report.method', {
+    inst: t('opt.install.' + r.installType), cable: t('opt.cableType.' + r.cableType), m: r.method, n: r.loaded
+  }));
+  lines.push(t('report.install', { t: fmt(r.ambient, 1), m: fmt(r.margin, 1), d: fmt(r.designAmbient, 1), k: fmt(r.kTheta, 3), f: fmt(r.factor, 3) }));
   lines.push('');
   lines.push(t('report.header'));
   for (const row of r.rows) {
@@ -1364,6 +1527,9 @@ function runTests() {
   check('k Al/PVC > 300 mm² 70→140 °C ≈ 68', adiabaticK('al', 70, 140), 68, 0.5);
 
   check('ρ Cu at 70 °C', rhoAtTemperature(0.017241, 0.00393, 70), 0.0206289, 1e-6);
+  check('ρ Cu at θmax XLPE 90 °C', rhoAtTemperature(0.017241, 0.00393, 90), 0.0219840, 1e-6);
+  check('kθ PVC, ambient 30 °C + margin 10 K', temperatureCorrectionFactor(70, 30 + 10), Math.sqrt(30 / 40), 1e-9);
+  check('kθ PVC, ambient 30 °C, no margin = 1', temperatureCorrectionFactor(70, 30), 1, 1e-12);
   check('Power loss DC 10 A, 5 m, 10 W → 2.25 mm²', sectionForPowerLoss({ system: 'dc', rho: 0.0225, length: 5, current: 10, pMax: 10 }), 2.25, 1e-9);
   check('AC negative denominator flagged', !!sectionForVoltageDrop({ system: 'ac1', rho: 0.0225, length: 1000, current: 100, dUmax: 1, cosphi: 0.8, x: 0.00008 }).error, true);
   check('Standard section of exactly 6 → 6', standardSection(6), 6);
@@ -1371,6 +1537,24 @@ function runTests() {
 
   const sh = sectionForHeating({ current: 16, rho: rhoAtTemperature(0.017241, 0.00393, 70), h: 10, deltaT: 40 });
   check('Heat balance at sized section returns θmax', temperatureFromHeatBalance({ current: 16, section: sh, h: 10, thetaAmb: 30, rho20: 0.017241, alpha: 0.00393 }), 70, 1e-6);
+
+  check('Method: trunking + multicore → B2', referenceMethod('trunkingWall', 'multi', 'C'), 'B2');
+  check('Method: cable tray + single-core → F', referenceMethod('cableTray', 'single', 'C'), 'F');
+  check('Method: insulated wall + single-core → A1', referenceMethod('insulatedWall', 'single', 'C'), 'A1');
+  check('Method: manual D1', referenceMethod('manual', 'multi', 'D1'), 'D1');
+  check('Method: wooden furniture + multicore → A2', referenceMethod('woodFurniture', 'multi', 'C'), 'A2');
+  check('Loaded conductors: three-phase → 3', loadedConductors('ac3'), 3);
+  check('kθ ground: 20 °C soil, reference 20 °C → 1', temperatureCorrectionFactor(70, 20, referenceTemperature('D2')), 1, 1e-12);
+  check('Iz key format', IZ_KEY_PATTERN.test(izKey('al', 'xlpe', 'B1', 3)), true);
+  const nonMonotonic = Object.keys(IZ_STANDARD).filter(key => {
+    const values = STD_SECTIONS.filter(s => IZ_STANDARD[key][s] > 0).map(s => IZ_STANDARD[key][s]);
+    return values.some((v, i) => i > 0 && v <= values[i - 1]);
+  });
+  check('Standard Iz tables increase with section', nonMonotonic.join(', '), '');
+  check('Standard Iz tables loaded (72)', Object.keys(IZ_STANDARD).length, 72);
+  check('Iz Cu/PVC method C, 2 loaded, 1.5 mm² = 19.5 A', (IZ_STANDARD['cu-pvc-C-2'] || {})[1.5], 19.5, 1e-9);
+  check('Iz Cu/PVC method B1, 2 loaded, 2.5 mm² = 24 A', (IZ_STANDARD['cu-pvc-B1-2'] || {})[2.5], 24, 1e-9);
+  check('Ampacity 16 A, Cu/PVC C, factor 1 → 1.5 mm²', sectionForAmpacity(IZ_STANDARD['cu-pvc-C-2'] || {}, 16, 1), 1.5);
 
   check('parseNumber "6,25"', parseNumber('6,25'), 6.25, 1e-12);
   check('parseNumber "6.25"', parseNumber('6.25'), 6.25, 1e-12);
@@ -1416,6 +1600,7 @@ function init() {
   form.addEventListener('submit', e => e.preventDefault());
   $('izBody').addEventListener('input', onIzInput);
   $('izExport').addEventListener('click', exportIz);
+  $('izRestore').addEventListener('click', restoreIz);
   $('izImportBtn').addEventListener('click', () => $('izImport').click());
   $('izImport').addEventListener('change', importIz);
   $('izClear').addEventListener('click', clearIz);
