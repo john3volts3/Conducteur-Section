@@ -301,7 +301,7 @@ et signale I > In. (La condition complémentaire I2 ≤ 1,45 Iz de l'IEC 60364-4
 |---|---|
 | Critère | Nom du critère, avec une note (limite utilisée, Iz corrigé, k…). |
 | Requise | Section exacte calculée par la formule, avant arrondi (« table » pour le courant admissible et la protection, qui lisent directement la table). |
-| Normalisée | Section requise arrondie à la section normalisée IEC 60228 supérieure. |
+| Normalisée | Section requise arrondie à la section normalisée IEC 60228 supérieure. Chaque section est suivie de son équivalent AWG. |
 | État | OK, Erreur (impossible ou au-delà de 630 mm²), Pas de données (table vide), Échec (I > In), Dimensionnant (fixe le résultat). |
 
 ### Section retenue (synthèse)
@@ -314,6 +314,27 @@ et signale I > In. (La condition complémentaire I2 ≤ 1,45 Iz de l'IEC 60364-4
 | Iz' de la section retenue | Quand le critère de protection est activé. |
 | Épaisseur de peau δ / rayon | Alternatif uniquement ; un avertissement apparaît si le rayon dépasse δ. |
 | Courant d'emploi, résistivité ρ | Valeurs réellement utilisées. |
+
+### Équivalent AWG
+Chaque section affichée par l'application (carte de résultat, colonnes Requise et Normalisée, éditeur de courant
+admissible, barre du téléphone, avertissements, rapport copié) est suivie de son **équivalent AWG** : la plus petite
+taille American Wire Gauge dont la section est **au moins égale** à la section métrique. Les deux séries ne coïncident
+jamais exactement : la taille supérieure est retenue (prudent). La carte de résultat est partagée en deux moitiés
+égales : section métrique | équivalent AWG.
+
+- Tailles listées : AWG 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 3, 2, 1, 1/0, 2/0, 3/0, 4/0, puis 250 à 2000 kcmil.
+- Section AWG : d = 0,127 · 92^((36 − n) / 39) mm, S = π · d² / 4 (1/0 → n = 0 … 4/0 → n = −3). 1 kcmil = 0,5067 mm².
+- Exemples : 1,5 mm² → AWG 14 ; 2,5 mm² → AWG 12 ; 35 mm² → AWG 1 ; 120 mm² → 250 kcmil ; 630 mm² → 1250 kcmil.
+
+### Convertisseur de section mm² ⇄ AWG
+Carte sous l'éditeur de courant admissible, indépendante du calcul (non mémorisée). Saisir dans un champ remplit l'autre en temps réel.
+
+| Saisie | Résultat |
+|---|---|
+| Section en mm² | Le champ AWG reçoit la taille correspondante (à ±1 %), sinon la plus petite taille ≥. La ligne dessous donne la fourchette, ex. « Entre AWG 14 (2,081 mm²) et AWG 12 (3,309 mm²) ». |
+| AWG ou kcmil (`12`, `#12`, `AWG 12`, `1/0`…`4/0`, `00`, `250 kcmil`, `250 MCM`) | Le champ mm² reçoit la section (3 décimales). La ligne dessous donne la section, le diamètre et la plus petite section métrique normalisée ≥. |
+
+L'équivalence est purement géométrique : une même section ne garantit pas le même courant admissible.
 
 ## 7. Tables de courant admissible
 
@@ -387,6 +408,7 @@ dimensionne ce câble).
 - Pas de vérification de la boucle de défaut (protection des personnes, longueur maximale pour les contacts indirects).
 - Pas de correction pour les harmoniques (neutre chargé par l'harmonique 3 en triphasé).
 - Pas de conducteurs en parallèle au-delà de 630 mm².
+- Équivalent AWG uniquement géométrique : le courant admissible des câbles AWG (NEC / UL) n'est pas calculé ; jauges impaires (5, 7, 9…) non proposées.
 
 ## 11. Références et glossaire
 

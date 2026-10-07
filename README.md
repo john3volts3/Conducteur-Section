@@ -33,6 +33,8 @@ works offline by double-clicking `index.html`, and can be hosted as-is on any st
   resistivity at the insulation's maximum temperature (or a chosen temperature, or the IEC 1.25 × ρ20 convention).
 - **Results**: table of required and standard sections per criterion, governing criterion highlighted, actual voltage
   drop and losses, estimated conductor temperature, maximum length, skin-effect check, warnings.
+- **AWG equivalent** shown next to every section (smallest AWG / kcmil size ≥ the metric section), and a
+  **mm² ⇄ AWG converter** (bracket when the sizes do not match, AWG or kcmil → mm²).
 - **Ampacity tables**: 72 tables (Cu/Al, PVC/XLPE, methods A1–F, 2 or 3 loaded conductors), editable per table,
   restore to standard values, JSON export/import.
 - English / French interface, decimal point or comma accepted, light/dark theme, "Copy results" as text,
@@ -136,6 +138,7 @@ The detailed specification is in [FSD.md](FSD.md) (French).
 - "Inside wooden furniture" is not listed in the standard: method A1/A2 is a conservative assumption.
 - AC resistance is taken equal to the DC resistance (skin effect is only flagged).
 - No fault-loop (protection of persons) verification.
+- The AWG equivalent is geometric only: the ampacity of AWG cables (NEC / UL) is not computed.
 
 ## License
 

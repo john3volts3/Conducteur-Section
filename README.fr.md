@@ -37,6 +37,8 @@ n'importe quel hébergeur statique.
 - **Résultats** : tableau des sections requises et normalisées par critère, critère dimensionnant mis en évidence,
   chute de tension et pertes réelles, température estimée du conducteur, longueur maximale, contrôle de l'effet de peau,
   avertissements.
+- **Équivalent AWG** affiché à côté de chaque section (plus petite taille AWG / kcmil ≥ la section métrique), et
+  **convertisseur mm² ⇄ AWG** (fourchette quand les tailles ne correspondent pas, AWG ou kcmil → mm²).
 - **Tables de courant admissible** : 72 tables (Cu/Al, PVC/PR, méthodes A1 à F, 2 ou 3 conducteurs chargés),
   modifiables table par table, retour aux valeurs normalisées, export/import JSON.
 - Interface anglais / français, point ou virgule acceptés comme séparateur décimal, thème clair/sombre,
@@ -141,6 +143,7 @@ La spécification détaillée se trouve dans [FSD.md](FSD.md).
 - « Dans un meuble en bois » ne figure pas dans la norme : la méthode A1/A2 est une hypothèse prudente.
 - La résistance en alternatif est prise égale à la résistance en continu (l'effet de peau est seulement signalé).
 - Pas de vérification de la boucle de défaut (protection des personnes).
+- L'équivalent AWG est uniquement géométrique : le courant admissible des câbles AWG (NEC / UL) n'est pas calculé.
 
 ## Licence
 

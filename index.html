@@ -190,6 +190,14 @@ tr.governing td { background: var(--gov-bg); font-weight: 600; }
 .hero .label { font-size: 0.85rem; color: var(--muted); }
 .hero .value { font-size: 2.6rem; font-weight: 700; line-height: 1.1; margin: 0.2rem 0; font-variant-numeric: tabular-nums; }
 .hero .sub { font-size: 0.9rem; }
+/* Hero value split in two equal halves: metric section | AWG equivalent */
+.hero .value.dual { display: grid; grid-template-columns: 1fr 1fr; font-size: 2rem; }
+.hero-half { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 0; padding: 0 0.4rem; }
+.hero-half + .hero-half { border-left: 1px solid var(--accent); }
+.hero-cap { font-size: 0.75rem; font-weight: 400; color: var(--muted); line-height: 1.3; }
+@media (max-width: 30rem) { .hero .value.dual { font-size: 1.5rem; } }
+.conv-grid { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.conv-out { font-size: inherit; font-variant-numeric: tabular-nums; min-height: 1.2em; }
 
 dl.summary { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 0.9rem; margin: 0; font-size: 0.88rem; }
 dl.summary dt { color: var(--muted); }
@@ -568,12 +576,32 @@ footer { color: var(--muted); font-size: 0.8rem; padding: 0 1rem 1.5rem; max-wid
         </table>
       </div>
     </details>
+
+    <section class="card" aria-labelledby="h-conv">
+      <h2 id="h-conv" data-i18n="conv.title"></h2>
+      <div class="grid conv-grid">
+        <div class="field">
+          <label for="convMm2" data-i18n="conv.mm2Label"></label>
+          <input id="convMm2" type="text" inputmode="decimal">
+          <output class="conv-out" id="convMm2Out" for="convMm2"></output>
+        </div>
+        <div class="field">
+          <label for="convAwg" data-help="help.awg" data-i18n="conv.awgLabel"></label>
+          <input id="convAwg" type="text">
+          <output class="conv-out" id="convAwgOut" for="convAwg"></output>
+        </div>
+      </div>
+      <p class="hint" data-i18n="conv.hint"></p>
+    </section>
   </div>
 
   <aside class="results" id="results" aria-live="polite">
     <section class="card hero" id="hero">
       <div class="label" data-i18n="res.hero"></div>
-      <div class="value" id="heroValue">—</div>
+      <div class="value dual">
+        <div class="hero-half"><span id="heroValue">—</span><span class="hero-cap" data-i18n="res.mm2Caption"></span></div>
+        <div class="hero-half"><span id="heroAwg">—</span><span class="hero-cap" data-help="help.awg" data-i18n="res.awgCaption"></span></div>
+      </div>
       <div class="sub" id="heroSub"></div>
     </section>
     <section class="card" aria-labelledby="h-crit-res">
@@ -627,6 +655,10 @@ const INSULATIONS = {
 const K_TABLE = { 'cu-pvc': 115, 'cu-xlpe': 143, 'al-pvc': 76, 'al-xlpe': 94 };
 const K_TABLE_LARGE = { 'cu-pvc': 103, 'cu-xlpe': 143, 'al-pvc': 68, 'al-xlpe': 94 };
 const STD_SECTIONS = [0.5, 0.75, 1, 1.5, 2.5, 4, 6, 10, 16, 25, 35, 50, 70, 95, 120, 150, 185, 240, 300, 400, 500, 630];
+// AWG gauges in common use (0 = 1/0 … -3 = 4/0), then kcmil sizes above 4/0; 1 kcmil = 1000 circular mils
+const AWG_GAUGES = [24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 3, 2, 1, 0, -1, -2, -3];
+const KCMIL_SIZES = [250, 300, 350, 400, 500, 600, 700, 750, 800, 900, 1000, 1250, 1500, 1750, 2000];
+const MM2_PER_KCMIL = 0.5067074790975;
 const MU0 = 4e-7 * Math.PI;
 const THETA_REF = 30;
 const THETA_REF_GROUND = 20;
@@ -722,6 +754,7 @@ function setLanguage(lang) {
   renderIzEditor();
   updateKField();
   compute();
+  renderConverter();
 }
 
 function cycleLanguage() {
@@ -870,6 +903,57 @@ function standardSection(section) {
   return s === undefined ? null : s;
 }
 
+// AWG gauge n (1/0 = 0, 4/0 = -3): diameter d = 0.127 × 92^((36 − n) / 39) mm
+function awgDiameter(n) {
+  return 0.127 * Math.pow(92, (36 - n) / 39);
+}
+
+function awgArea(n) {
+  const d = awgDiameter(n);
+  return Math.PI / 4 * d * d;
+}
+
+function awgName(n) {
+  return 'AWG ' + (n > 0 ? String(n) : (1 - n) + '/0');
+}
+
+// Listed AWG / kcmil sizes, ascending cross-section
+const AWG_SIZES = AWG_GAUGES.map(n => ({ label: awgName(n), mm2: awgArea(n) }))
+  .concat(KCMIL_SIZES.map(k => ({ label: k + ' kcmil', mm2: k * MM2_PER_KCMIL })));
+
+// Smallest listed AWG / kcmil size whose cross-section is >= section, null beyond 2000 kcmil
+function awgAtLeast(section) {
+  if (!Number.isFinite(section) || section <= 0) return null;
+  return AWG_SIZES.find(a => a.mm2 >= section * (1 - 1e-9)) || null;
+}
+
+// Listed sizes around a metric section: exact (within 1 %), else the nearest below and above
+function awgBracket(section) {
+  const exact = AWG_SIZES.find(a => Math.abs(a.mm2 - section) <= 0.01 * a.mm2) || null;
+  const upper = awgAtLeast(section);
+  const lower = AWG_SIZES.filter(a => a.mm2 < section).pop() || null;
+  return { exact, lower, upper };
+}
+
+// "12", "AWG 12", "#12", "4/0", "0000", "250 kcmil", "250 MCM" → { label, mm2, diameter }, null if unknown
+function parseAwg(raw) {
+  const text = String(raw).trim().toUpperCase().replace(/\s+/g, '').replace(/^AWG|AWG$/, '').replace(/^#/, '');
+  let n = null;
+  const kcmil = text.match(/^(\d+(?:[.,]\d+)?)(KCMIL|MCM)$/);
+  if (kcmil) {
+    const v = parseNumber(kcmil[1]);
+    if (!(v > 0)) return null;
+    const mm2 = v * MM2_PER_KCMIL;
+    return { label: kcmil[1] + ' kcmil', mm2, diameter: 2 * Math.sqrt(mm2 / Math.PI) };
+  }
+  let m;
+  if ((m = text.match(/^([1-4])\/0$/))) n = 1 - Number(m[1]);
+  else if (/^0{1,4}$/.test(text)) n = 1 - text.length;
+  else if (/^\d{1,2}$/.test(text) && Number(text) >= 1 && Number(text) <= 40) n = Number(text);
+  if (n === null) return null;
+  return { label: awgName(n), mm2: awgArea(n), diameter: awgDiameter(n) };
+}
+
 /* ===================== Storage ===================== */
 
 const store = {
@@ -950,6 +1034,23 @@ function fmt(n, digits = 2) {
 
 function fmtSection(s) {
   return s == null ? '—' : fmt(s, 2) + ' mm²';
+}
+
+// Smallest AWG / kcmil equivalent >= section
+function fmtAwg(s) {
+  if (s == null || !Number.isFinite(s)) return '—';
+  const a = awgAtLeast(s);
+  return a ? a.label : '> ' + AWG_SIZES[AWG_SIZES.length - 1].label;
+}
+
+function fmtSectionAwg(s) {
+  return s == null || !Number.isFinite(s) ? '—' : fmtSection(s) + ' / ' + fmtAwg(s);
+}
+
+// Table cell content: metric section with its AWG equivalent below
+function sectionCellHtml(s) {
+  if (s == null || !Number.isFinite(s)) return '—';
+  return escapeHtml(fmtSection(s)) + '<span class="row-note">' + escapeHtml(fmtAwg(s)) + '</span>';
 }
 
 // Number written into an input field, with the decimal separator of the current language
@@ -1078,7 +1179,7 @@ function renderIzEditor() {
   else $('izSource').textContent = t('iz.sourceNone');
   $('izRestore').disabled = !isCustomIz(key) || !IZ_STANDARD[key];
   $('izBody').innerHTML = STD_SECTIONS.map(s =>
-    '<tr><th scope="row"><label for="' + sectionId(s) + '">' + escapeHtml(t('iz.rowLabel', { s: fmt(s, 2) })) + '</label></th>' +
+    '<tr><th scope="row"><label for="' + sectionId(s) + '">' + escapeHtml(t('iz.rowLabel', { s: fmt(s, 2) })) + '</label><span class="row-note">' + escapeHtml(fmtAwg(s)) + '</span></th>' +
     '<td><input type="text" inputmode="decimal" id="' + sectionId(s) + '" data-section="' + s + '" value="' + (table[s] != null ? escapeHtml(numberToInput(table[s])) : '') + '"></td>' +
     '<td class="num" data-corr="' + s + '">—</td></tr>'
   ).join('');
@@ -1304,7 +1405,7 @@ function compute() {
       const std = sectionForAmpacity(izTable, I, factor);
       const firstSection = STD_SECTIONS.find(sec => izTable[sec] > 0);
       if (std != null && std === firstSection && firstSection > 1.5) {
-        warnings.push({ cls: 'note', text: t('warn.tableStart', { s: fmtSection(firstSection), m: method }) });
+        warnings.push({ cls: 'note', text: t('warn.tableStart', { s: fmtSectionAwg(firstSection), m: method }) });
       }
       rows.push(std == null
         ? { id: 'iz', required: NaN, std: null, status: 'error', note: t('note.izNone', { i: fmt(I, 1) }) }
@@ -1388,7 +1489,7 @@ function compute() {
     if (s.protOn && hasIz && izTable[S] > 0) {
       const izc = izTable[S] * factor;
       report.summary.push([t('sum.izSelected'), t('sum.izValue', { v: fmt(izc, 1) })]);
-      if (inRating > izc) warnings.push({ cls: 'err', text: t('warn.protIz', { in: fmt(inRating, 1), iz: fmt(izc, 1), s: fmtSection(S) }) });
+      if (inRating > izc) warnings.push({ cls: 'err', text: t('warn.protIz', { in: fmt(inRating, 1), iz: fmt(izc, 1), s: fmtSectionAwg(S) }) });
     }
 
     if (ac) {
@@ -1412,7 +1513,12 @@ function compute() {
 
 function requiredText(row) {
   if (row.id === 'iz' || row.id === 'prot') return row.std != null ? t('res.table') : '—';
-  return fmtSection(Number.isFinite(row.required) ? row.required : null);
+  return fmtSectionAwg(Number.isFinite(row.required) ? row.required : null);
+}
+
+function requiredCellHtml(row) {
+  if (row.id === 'iz' || row.id === 'prot') return escapeHtml(requiredText(row));
+  return sectionCellHtml(Number.isFinite(row.required) ? row.required : null);
 }
 
 function render(report) {
@@ -1421,8 +1527,8 @@ function render(report) {
     ? rows.map(r =>
       '<tr class="' + (r.governing ? 'governing' : '') + '">' +
       '<td>' + escapeHtml(criterionName(r.id)) + '<span class="row-note">' + escapeHtml(r.note || '') + '</span></td>' +
-      '<td class="num">' + escapeHtml(requiredText(r)) + '</td>' +
-      '<td class="num">' + escapeHtml(fmtSection(r.std)) + '</td>' +
+      '<td class="num">' + requiredCellHtml(r) + '</td>' +
+      '<td class="num">' + sectionCellHtml(r.std) + '</td>' +
       '<td><span class="badge s-' + r.status + '">' + escapeHtml(t('status.' + r.status)) + '</span>' +
       (r.governing ? ' <span class="badge s-governing">' + escapeHtml(t('status.governing')) + '</span>' : '') + '</td></tr>'
     ).join('')
@@ -1432,12 +1538,14 @@ function render(report) {
     const name = criterionName(final.id);
     const showRequired = Number.isFinite(final.required) && final.id !== 'iz' && final.id !== 'prot';
     $('heroValue').textContent = fmtSection(final.std);
+    $('heroAwg').textContent = fmtAwg(final.std);
     $('heroSub').textContent = showRequired
-      ? t('res.governingRequired', { name, s: fmtSection(final.required) })
+      ? t('res.governingRequired', { name, s: fmtSectionAwg(final.required) })
       : t('res.governing', { name });
-    $('pillValue').textContent = t('res.pillValue', { s: fmtSection(final.std), name });
+    $('pillValue').textContent = t('res.pillValue', { s: fmtSectionAwg(final.std), name });
   } else {
     $('heroValue').textContent = '—';
+    $('heroAwg').textContent = '—';
     $('heroSub').textContent = t(rows.length ? 'res.noValid' : 'res.enableOne');
     $('pillValue').textContent = '—';
   }
@@ -1450,10 +1558,51 @@ function renderInvalid() {
   lastReport = null;
   $('critBody').innerHTML = '<tr><td colspan="4">' + escapeHtml(t('res.fixInputs')) + '</td></tr>';
   $('heroValue').textContent = '—';
+  $('heroAwg').textContent = '—';
   $('heroSub').textContent = t('res.invalid');
   $('pillValue').textContent = t('res.invalid');
   $('summary').innerHTML = '';
   $('warnings').innerHTML = '';
+}
+
+/* ===================== Section converter mm² ⇄ AWG ===================== */
+
+function convertMm2Text(raw) {
+  if (!String(raw).trim()) return '';
+  const v = parseNumber(raw);
+  if (!(v > 0)) return t('conv.invalidMm2');
+  const { exact, lower, upper } = awgBracket(v);
+  if (exact) return t('conv.exact', { awg: exact.label, mm2: fmt(exact.mm2, 3) });
+  if (lower && upper) return t('conv.between', { lo: lower.label, loMm2: fmt(lower.mm2, 3), hi: upper.label, hiMm2: fmt(upper.mm2, 3) });
+  if (upper) return t('conv.below', { awg: upper.label, mm2: fmt(upper.mm2, 3) });
+  return t('conv.above', { awg: lower.label, mm2: fmt(lower.mm2, 3) });
+}
+
+function convertAwgText(raw) {
+  if (!String(raw).trim()) return '';
+  const r = parseAwg(raw);
+  if (!r) return t('conv.invalidAwg');
+  return t('conv.awgResult', { awg: r.label, mm2: fmt(r.mm2, 3), d: fmt(r.diameter, 3), std: fmtSection(standardSection(r.mm2)) });
+}
+
+// Typing in one field writes the equivalent into the other (exact match, else smallest size >=)
+function onConvMm2Input() {
+  const v = parseNumber($('convMm2').value);
+  const b = v > 0 ? awgBracket(v) : null;
+  const a = b && (b.exact || b.upper);
+  $('convAwg').value = a ? a.label : '';
+  renderConverter();
+}
+
+function onConvAwgInput() {
+  const r = parseAwg($('convAwg').value);
+  $('convMm2').value = r ? numberToInput(Number(r.mm2.toFixed(3))) : '';
+  renderConverter();
+}
+
+function renderConverter() {
+  $('convMm2Out').textContent = convertMm2Text($('convMm2').value);
+  $('convAwgOut').textContent = convertAwgText($('convAwg').value);
 }
 
 /* ===================== Copy / reset / theme ===================== */
@@ -1477,12 +1626,12 @@ function reportToText(r) {
   lines.push('');
   lines.push(t('report.header'));
   for (const row of r.rows) {
-    lines.push(criterionName(row.id) + ' | ' + requiredText(row) + ' | ' + fmtSection(row.std) + ' | ' +
+    lines.push(criterionName(row.id) + ' | ' + requiredText(row) + ' | ' + fmtSectionAwg(row.std) + ' | ' +
       t('status.' + row.status) + (row.governing ? t('report.governingFlag') : '') + (row.note ? ' — ' + row.note : ''));
   }
   lines.push('');
   lines.push(t('report.recommended', {
-    v: r.final ? t('report.recommendedValue', { s: fmtSection(r.final.std), name: criterionName(r.final.id) }) : '—'
+    v: r.final ? t('report.recommendedValue', { s: fmtSectionAwg(r.final.std), name: criterionName(r.final.id) }) : '—'
   }));
   for (const [k, v] of r.summary) lines.push(k + ': ' + v);
   if (r.warnings.length) {
@@ -1700,6 +1849,21 @@ function runTests() {
   check('Iz Cu/PVC method B1, 2 loaded, 2.5 mm² = 24 A', (IZ_STANDARD['cu-pvc-B1-2'] || {})[2.5], 24, 1e-9);
   check('Ampacity 16 A, Cu/PVC C, factor 1 → 1.5 mm²', sectionForAmpacity(IZ_STANDARD['cu-pvc-C-2'] || {}, 16, 1), 1.5);
 
+  check('AWG 12 area ≈ 3.309 mm²', awgArea(12), 3.309, 0.001);
+  check('AWG 4/0 area ≈ 107.2 mm²', awgArea(-3), 107.2, 0.05);
+  check('AWG ≥ 1.5 mm² → AWG 14', (awgAtLeast(1.5) || {}).label, 'AWG 14');
+  check('AWG ≥ 2.5 mm² → AWG 12', (awgAtLeast(2.5) || {}).label, 'AWG 12');
+  check('AWG ≥ 120 mm² → 250 kcmil', (awgAtLeast(120) || {}).label, '250 kcmil');
+  check('AWG ≥ 630 mm² → 1250 kcmil', (awgAtLeast(630) || {}).label, '1250 kcmil');
+  check('AWG ≥ 1100 mm² → none', awgAtLeast(1100), null);
+  check('Bracket 2.5 mm²: AWG 14 … AWG 12', [awgBracket(2.5).lower.label, awgBracket(2.5).upper.label].join(' … '), 'AWG 14 … AWG 12');
+  check('Bracket 2.08 mm² → exact AWG 14', (awgBracket(2.08).exact || {}).label, 'AWG 14');
+  check('parseAwg "00" → AWG 2/0', (parseAwg('00') || {}).label, 'AWG 2/0');
+  check('parseAwg "4/0" = AWG 4/0', (parseAwg('awg 4/0') || {}).label, 'AWG 4/0');
+  check('parseAwg "250 MCM" ≈ 126.68 mm²', (parseAwg('250 MCM') || {}).mm2, 126.68, 0.01);
+  check('parseAwg "abc" rejected', parseAwg('abc'), null);
+  check('parseAwg "41" rejected', parseAwg('41'), null);
+
   check('parseNumber "6,25"', parseNumber('6,25'), 6.25, 1e-12);
   check('parseNumber "6.25"', parseNumber('6.25'), 6.25, 1e-12);
   check('parseNumber " -5 "', parseNumber(' -5 '), -5, 1e-12);
@@ -1755,6 +1919,8 @@ function init() {
   $('btnCopy').addEventListener('click', copyResults);
   $('btnReset').addEventListener('click', resetSettings);
   $('btnTheme').addEventListener('click', cycleTheme);
+  $('convMm2').addEventListener('input', onConvMm2Input);
+  $('convAwg').addEventListener('input', onConvAwgInput);
   $('mobilePill').addEventListener('click', () => $('results').scrollIntoView({ behavior: 'smooth' }));
 
   renderIzEditor();

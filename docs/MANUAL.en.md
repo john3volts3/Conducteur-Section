@@ -296,7 +296,7 @@ and flags I > In. (The additional condition I2 ≤ 1.45 Iz of IEC 60364-4-43 is 
 |---|---|
 | Criterion | Name of the criterion, with a note (limit used, corrected Iz, k…). |
 | Required | Exact section computed by the formula, before rounding ("table" for ampacity and protection, which read the table directly). |
-| Standard | Required section rounded up to the next IEC 60228 standard section. |
+| Standard | Required section rounded up to the next IEC 60228 standard section. Each section is followed by its AWG equivalent. |
 | Status | OK, Error (impossible or above 630 mm²), No data (empty table), Fail (I > In), Governing (sets the result). |
 
 ### Selected section (summary)
@@ -309,6 +309,26 @@ and flags I > In. (The additional condition I2 ≤ 1.45 Iz of IEC 60364-4-43 is 
 | Iz' at selected section | When the protection criterion is enabled. |
 | Skin depth δ / radius | AC only; a warning appears when the radius exceeds δ. |
 | Design current, resistivity ρ | Values actually used. |
+
+### AWG equivalent
+Every section shown by the app (result card, Required and Standard columns, ampacity editor, phone bar, warnings,
+copied report) is followed by its **AWG equivalent**: the smallest American Wire Gauge size whose cross-section is
+**at least** the metric section. The two series never coincide exactly, so the larger size is taken (conservative).
+The result card is split in two equal halves: metric section | AWG equivalent.
+
+- Listed sizes: AWG 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 3, 2, 1, 1/0, 2/0, 3/0, 4/0, then 250 to 2000 kcmil.
+- AWG section: d = 0.127 · 92^((36 − n) / 39) mm, S = π · d² / 4 (1/0 → n = 0 … 4/0 → n = −3). 1 kcmil = 0.5067 mm².
+- Examples: 1.5 mm² → AWG 14; 2.5 mm² → AWG 12; 35 mm² → AWG 1; 120 mm² → 250 kcmil; 630 mm² → 1250 kcmil.
+
+### Section converter mm² ⇄ AWG
+Card below the ampacity editor, independent of the calculation (not saved). Typing in one field fills the other in real time.
+
+| Input | Result |
+|---|---|
+| Section in mm² | The AWG field receives the matching size (within ±1 %), otherwise the smallest size ≥. The line below gives the bracket, e.g. "Between AWG 14 (2.081 mm²) and AWG 12 (3.309 mm²)". |
+| AWG or kcmil (`12`, `#12`, `AWG 12`, `1/0`…`4/0`, `00`, `250 kcmil`, `250 MCM`) | The mm² field receives the section (3 decimals). The line below gives the section, the diameter and the smallest standard metric section ≥. |
+
+The equivalence is purely geometric: the same cross-section does not mean the same ampacity.
 
 ## 7. Ampacity tables
 
@@ -380,6 +400,7 @@ Result **25 mm²**, governed by the ampacity (the thermal environment, not the l
 - No fault-loop verification (protection of persons, maximum length for indirect contact).
 - No harmonic correction (neutral loaded by 3rd harmonics in three-phase).
 - No parallel conductors above 630 mm².
+- AWG equivalent geometric only: the ampacity of AWG cables (NEC / UL) is not computed; odd gauges (5, 7, 9…) are not proposed.
 
 ## 11. References and glossary
 

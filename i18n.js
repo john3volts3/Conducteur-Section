@@ -160,6 +160,20 @@ const I18N = {
     'res.fixInputs': 'Fix the highlighted inputs.',
     'res.invalid': 'Invalid inputs',
     'res.table': 'table',
+    'res.mm2Caption': 'metric (IEC)',
+    'res.awgCaption': 'smallest AWG ≥',
+
+    'conv.title': 'Section converter mm² ⇄ AWG',
+    'conv.mm2Label': 'Section (mm²)',
+    'conv.awgLabel': 'AWG or kcmil',
+    'conv.hint': 'Examples: 2.5 · 12 · 4/0 · 00 · 250 kcmil (or MCM). Geometric equivalence only: equal sections do not imply equal ampacity.',
+    'conv.exact': '≈ {awg} ({mm2} mm²).',
+    'conv.between': 'Between {lo} ({loMm2} mm²) and {hi} ({hiMm2} mm²). Smallest size ≥: {hi}.',
+    'conv.below': 'Smaller than {awg} ({mm2} mm²), the smallest listed size: use {awg}.',
+    'conv.above': 'Larger than {awg} ({mm2} mm²), the largest listed size.',
+    'conv.awgResult': '{awg} = {mm2} mm² (Ø {d} mm). Smallest standard metric section ≥: {std}.',
+    'conv.invalidMm2': 'Enter a positive section in mm².',
+    'conv.invalidAwg': 'Unknown size: enter an AWG gauge (40 to 1, 1/0 to 4/0) or a value in kcmil.',
 
     'status.ok': 'OK',
     'status.error': 'Error',
@@ -289,6 +303,7 @@ const I18N = {
     "help.inRating": "Rated current of the circuit breaker or fuse protecting the line, in A (e.g. 16, 20, 32 A).",
     "help.colRequired": "Exact section computed for this criterion, before rounding.",
     "help.colStandard": "Required section rounded up to the next standard section (IEC 60228: 1.5, 2.5, 4, 6, 10 mm²…).",
+    "help.awg": "AWG equivalent: smallest American Wire Gauge size (24 to 4/0, then kcmil) whose cross-section is at least the metric section — the two series never coincide exactly. 1 kcmil = 0.5067 mm². Geometric equivalence only: check the ampacity of the AWG cable against the rules that apply to it.",
     'test.banner': 'Test mode: {p}/{n} tests passed — details in the browser console.'
   },
 
@@ -449,6 +464,20 @@ const I18N = {
     'res.fixInputs': 'Corriger les saisies en rouge.',
     'res.invalid': 'Saisies invalides',
     'res.table': 'table',
+    'res.mm2Caption': 'métrique (IEC)',
+    'res.awgCaption': 'plus petite AWG ≥',
+
+    'conv.title': 'Convertisseur de section mm² ⇄ AWG',
+    'conv.mm2Label': 'Section (mm²)',
+    'conv.awgLabel': 'AWG ou kcmil',
+    'conv.hint': 'Exemples : 2,5 · 12 · 4/0 · 00 · 250 kcmil (ou MCM). Équivalence géométrique uniquement : une même section n\'implique pas le même courant admissible.',
+    'conv.exact': '≈ {awg} ({mm2} mm²).',
+    'conv.between': 'Entre {lo} ({loMm2} mm²) et {hi} ({hiMm2} mm²). Plus petite taille ≥ : {hi}.',
+    'conv.below': 'Inférieure à {awg} ({mm2} mm²), la plus petite taille listée : utiliser {awg}.',
+    'conv.above': 'Supérieure à {awg} ({mm2} mm²), la plus grande taille listée.',
+    'conv.awgResult': '{awg} = {mm2} mm² (Ø {d} mm). Plus petite section métrique normalisée ≥ : {std}.',
+    'conv.invalidMm2': 'Saisir une section positive en mm².',
+    'conv.invalidAwg': 'Taille inconnue : saisir une jauge AWG (40 à 1, 1/0 à 4/0) ou une valeur en kcmil.',
 
     'status.ok': 'OK',
     'status.error': 'Erreur',
@@ -578,6 +607,7 @@ const I18N = {
     "help.inRating": "Calibre du disjoncteur ou du fusible qui protège la ligne, en A (ex. 16, 20, 32 A).",
     "help.colRequired": "Section exacte calculée pour ce critère, avant arrondi.",
     "help.colStandard": "Section requise arrondie à la section normalisée supérieure (IEC 60228 : 1,5, 2,5, 4, 6, 10 mm²…).",
+    "help.awg": "Équivalent AWG : plus petite taille American Wire Gauge (24 à 4/0, puis kcmil) dont la section est au moins égale à la section métrique — les deux séries ne coïncident jamais exactement. 1 kcmil = 0,5067 mm². Équivalence géométrique uniquement : vérifier le courant admissible du câble AWG selon les règles qui lui sont applicables.",
     'test.banner': 'Mode test : {p}/{n} tests réussis — détails dans la console du navigateur.'
   }
 };

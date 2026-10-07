@@ -53,3 +53,20 @@ Décisions validées par l'utilisateur :
 - Pas de bouton de mise à jour des valeurs Iz : version des données affichée à la place.
 - Déploiement Vercel depuis GitHub (dépôt privé), `.vercelignore` en liste blanche.
 - Dépôt GitHub rendu public (option C) après audit ; licence MIT ; `grouping-data.js` conservé.
+
+## Session du 2026-10-07
+
+| Heure | Fichier | Modification |
+|---|---|---|
+| 2026-10-07 | `index.html` | Équivalent AWG (plus petite taille ≥, AWG 24…4/0 puis kcmil 250…2000) : carte de résultat partagée en deux moitiés égales mm² / AWG, AWG sous chaque section des colonnes Requise / Normalisée et de l'éditeur Iz, format « mm² / AWG » dans la pastille mobile, les avertissements et le rapport copié. Fonctions `awgArea`, `awgAtLeast`, `awgBracket`, `parseAwg`, `fmtAwg`, `fmtSectionAwg`. |
+| 2026-10-07 | `index.html` | Nouvelle carte « Section converter mm² ⇄ AWG » : mm² → AWG (correspondance à ±1 % ou fourchette + plus petite taille ≥), AWG/kcmil → mm² (diamètre, section métrique normalisée ≥) ; +14 auto-tests (60). |
+| 2026-10-07 | `i18n.js` | Clés EN/FR `res.mm2Caption`, `res.awgCaption`, `conv.*`, `help.awg`. |
+| 2026-10-07 | `index.html` | Convertisseur : la saisie dans un champ remplit l'autre en temps réel (`onConvMm2Input`, `onConvAwgInput`). |
+| 2026-10-07 | `index.html` | Convertisseur : lignes de résultat à la même taille de police que les champs de saisie (`.conv-out`). |
+| 2026-10-07 | `FSD.md` | Sorties AWG, section 4bis convertisseur, 60 tests, limites AWG. |
+| 2026-10-07 | `README.md`, `README.fr.md` | Fonctionnalité équivalent AWG + convertisseur, limite AWG. |
+| 2026-10-07 | `docs/MANUAL.en.md`, `docs/MANUEL.fr.md` | Section 6 : équivalent AWG (règle ≥, tailles, formule, exemples) et convertisseur mm² ⇄ AWG ; colonne Normalisée ; limite AWG. |
+
+Décisions validées par l'utilisateur :
+- Équivalent AWG = plus petite taille dont la section est ≥ la section métrique (prudent), kcmil au-delà de 4/0.
+- AWG affiché partout où une section apparaît (y compris colonne Normalisée et rapport copié).

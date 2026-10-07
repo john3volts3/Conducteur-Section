@@ -65,12 +65,28 @@ Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52
 
 ## 4. Sorties
 - Tableau Criterion / Required / Standard / Status (OK, Error, No data, Fail, Governing).
-- Section recommandée + critère dimensionnant.
+- Section recommandée + critère dimensionnant. La carte de résultat est partagée en deux moitiés égales :
+  section métrique (mm²) | équivalent AWG.
+- **Équivalent AWG** affiché partout où une section apparaît (carte de résultat, colonnes Requise/Normalisée,
+  pastille mobile, avertissements, éditeur Iz, rapport copié, au format `2,5 mm² / AWG 12`) : plus petite taille listée
+  dont la section est ≥ la section métrique. Tailles listées : AWG 24, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 3, 2, 1, 1/0…4/0,
+  puis 250…2000 kcmil (1 kcmil = 0,5067 mm²). Section AWG : d = 0,127·92^((36 − n)/39) mm, S = π·d²/4 (1/0 = 0 … 4/0 = −3).
+  Au-delà de 2000 kcmil : « > 2000 kcmil ».
 - Pour la section retenue : ΔU (V, %), pertes (W, % de P), température estimée du conducteur
   (θ = θcalc + (θmax − θcalc)·(I/Iz')² si Iz connu, sinon bilan thermique en forme fermée avec ρ(θ)),
   longueur max (ΔUmax et/ou Pmax), Iz' si protection, profondeur de peau δ = √(ρ/(π f μ0)) vs rayon √(S/π) (AC).
 - Avertissements : ΔU AC impossible, I > In, In > Iz', température > θmax, effet de peau, table Iz vide, section > 630 mm².
 - Bouton « Copy results » : rapport texte complet dans le presse-papiers.
+
+## 4bis. Convertisseur mm² ⇄ AWG
+- Carte indépendante du calcul (non mémorisée), sous l'éditeur Iz, deux champs avec leur résultat.
+  Saisir dans un champ remplit l'autre en temps réel (mm² → taille AWG correspondante, sinon plus petite ≥ ; AWG → mm² à 3 décimales) ;
+  saisie vide ou invalide → l'autre champ est vidé.
+  - **mm² → AWG** : correspondance si une taille listée est à ±1 % (« ≈ AWG 14 (2,081 mm²) ») ; sinon fourchette
+    « Entre AWG 14 (2,081 mm²) et AWG 12 (3,309 mm²) » et plus petite taille ≥ ; hors liste : en dessous de AWG 24 / au-delà de 2000 kcmil.
+  - **AWG → mm²** : accepte `12`, `AWG 12`, `#12`, `1/0`…`4/0`, `0`…`0000`, `250 kcmil`, `250 MCM` (AWG 40 à 4/0, kcmil quelconque) ;
+    affiche la section, le diamètre et la plus petite section métrique normalisée ≥.
+- Équivalence géométrique uniquement (aide `help.awg`) : même section ≠ même courant admissible.
 
 ## 5. Langue et saisie des nombres
 - Bouton de langue dans la barre du haut (affiche la langue suivante). Choix mémorisé (`cableSizer.lang`), anglais au premier lancement.
@@ -92,7 +108,7 @@ Autres fichiers du dépôt : `grouping-data.js` (facteurs de groupement IEC B.52
   en tête et en fin du texte copié, et en tête / fin des README et manuels (EN/FR).
 
 ## 5bis. Aide contextuelle
-- 31 libellés portent un attribut `data-help="help.<clé>"` (paramètres spécifiques, critères, colonnes Requise/Normalisée).
+- 34 libellés portent un attribut `data-help="help.<clé>"` (paramètres spécifiques, critères, colonnes Requise/Normalisée).
 - Un bouton « i » est ajouté après chaque libellé ; une bulle unique `#helpTip` (role tooltip) affiche le texte traduit.
 - Affichage : survol du libellé ou du « i » (souris), focus clavier sur le « i », clic/tap sur le « i » (épinglée).
   Fermeture : sortie de la souris, Échap, clic ailleurs, défilement, redimensionnement. Le clic sur le « i » d'un critère
@@ -116,8 +132,8 @@ localStorage (avec try/catch, l'app fonctionne sans) : `cableSizer.settings.v1` 
 Reset restaure les paramètres par défaut sans effacer les tables Iz.
 
 ## 8. Tests
-`index.html?test` : 45 auto-tests en console (`console.assert` + `console.table`) et bandeau récapitulatif :
-calculs, méthodes de référence, données Iz (nombre de tables, croissance, valeurs témoins), `parseNumber` (virgule/point, rejets), cohérence des clés de traduction entre langues et avec le HTML. Dont DC 12 V/10 A/5 m/ρ 0,0225/3 % → 6,25 → 10 mm² ; Isc 3000 A/0,1 s/k 115 → 8,25 → 10 mm² ; k Cu/PVC ≈ 115.
+`index.html?test` : 60 auto-tests en console (`console.assert` + `console.table`) et bandeau récapitulatif :
+calculs, méthodes de référence, données Iz (nombre de tables, croissance, valeurs témoins), `parseNumber` (virgule/point, rejets), AWG (sections, ≥, fourchette, `parseAwg`), cohérence des clés de traduction entre langues et avec le HTML. Dont DC 12 V/10 A/5 m/ρ 0,0225/3 % → 6,25 → 10 mm² ; Isc 3000 A/0,1 s/k 115 → 8,25 → 10 mm² ; k Cu/PVC ≈ 115.
 
 ## 9. Limites
 - Outil indicatif, ne remplace pas la norme (RGIE, NF C 15-100, IEC 60364) ni un professionnel qualifié.
@@ -129,6 +145,7 @@ calculs, méthodes de référence, données Iz (nombre de tables, croissance, va
 - Résistance AC = résistance DC (effet de peau/proximité seulement signalés).
 - Pas de vérification de la boucle de défaut (protection des personnes) ni de la longueur max en court-circuit minimal.
 - Sections > 630 mm² : signalées, conducteurs en parallèle non calculés.
+- Équivalent AWG purement géométrique : l'admissibilité d'un câble AWG relève d'autres normes (NEC/UL) et n'est pas calculée ; jauges AWG impaires (5, 7, 9…) non proposées comme équivalent.
 
 ## 10. Déploiement
 - Hébergement statique : `index.html`, `i18n.js`, `iz-data.js`.
